@@ -5,6 +5,7 @@
     <title>FE Tools</title>
     <link rel="stylesheet" type="text/css" href="styles.css">
     <script src="http://code.jquery.com/jquery-3.4.1.js"></script>
+    <script src="scripts.js"></script>
 </head>
 <body>
 
