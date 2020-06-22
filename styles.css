@@ -1,0 +1,78 @@
+body.help {
+    margin: 0 2% 150px 2%;
+}
+
+h1 {
+    text-align: center;
+    font-size: 3em;
+}
+
+h2 {
+    text-align: center;
+}
+
+h2.help {
+    font-size: 2.2em;
+}
+
+h3.help {
+    font-size: 2em;
+    margin: 10px 0;
+}
+
+h4.help {
+    font-size: 1.5em;
+    margin: 15px 0 10px 0;
+}
+
+h5.help {
+    font-size: 1.2em;
+    margin: 10px 0;
+}
+
+img {
+    margin: 5px 35px;
+    max-width: 50%;
+    max-height: 500px;
+}
+
+li {
+    margin: 5px 0;
+}
+
+div.options {
+    display: flex;
+    justify-content: center;
+}
+
+button {
+    font-size: 1em;
+}
+
+button.menu {
+    margin: 0 10px;
+}
+
+div.editWindow {
+    margin: 15px 5%;
+    border: 3px solid lightgrey;
+    border-radius: 5px;
+    padding: 10px;
+    display: none;
+}
+
+div {
+    margin: 0 25px;
+}
+
+input {
+    margin: 8px 0;
+}
+
+#radius {
+    width: 50px;
+}
+
+textarea {
+    margin-top: 8px
+}
