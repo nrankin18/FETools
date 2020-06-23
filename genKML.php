@@ -32,11 +32,14 @@ $lines = $cleanLines;
 
 for ($i = 0; $i < sizeof($lines); $i++) {
     $line = $lines[$i];
-    $elements = explode(" ", $line);
+    $elements = preg_split('/("[^"]*")|\h+/', $line, -1, PREG_SPLIT_NO_EMPTY|PREG_SPLIT_DELIM_CAPTURE);
 
     // Determine state
     if ($elements[0]=="[REGIONS]") {
         $state = "regions";
+        continue;
+    } else if ($elements[0]=="[LABELS]") {
+        $state = "labels";
         continue;
     }
 
@@ -72,6 +75,15 @@ for ($i = 0; $i < sizeof($lines); $i++) {
 
         $coords = $dom->createElement('coordinates', $coordinateStr);
         $ring->appendChild($coords);
+    } else if ($state = "labels") {
+        $placemark = $dom->createElement('Placemark');
+        $document->appendChild($placemark);
+        $name = $dom->createElement('name', str_replace('"',"",$elements[0]));
+        $placemark->appendChild($name);
+        $point = $dom->createElement('Point');
+        $placemark->appendChild($point);
+        $coordinates = $dom->createElement('coordinates', DMStoDec($elements[1], $elements[2]));
+        $point->appendChild($coordinates); 
     }
 }
 
