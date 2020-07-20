@@ -21,6 +21,18 @@
 </div>
 
 <div id="newFile" class="editWindow">
+<h3>Enter some basic information about the sector:</h3>
+    <div>
+        <label for="info-name">Sector File Name: </label><input type="text" id="info-name" placeholder="Boston Tower v5.0"><br>
+        <label for="info-callsign">Default Callsign: </label><input type="text" id="info-callsign" placeholder="BOS_TWR"><br>
+        <label for="info-airport">Default Airport: </label><input type="text" id="info-airport" maxlength="4" placeholder="KBOS"><br>
+        <label for="info-latitude">Default Latitude: </label><input type="text" id="info-latitude" maxlength="14" placeholder="N042.20.54.750"><br>
+        <label for="info-longitude">Default Longitude: </label><input type="text" id="info-longitude" maxlength="14" placeholder="W071.00.21.920"><br>
+        <label for="info-nmLat">Nautical Miles per Degree of Latitude: </label><input type="text" id="info-nmLat" placeholder="60" value="60"><br>
+        <label for="info-nmLong">Nautical Miles per Degree of Longitude: </label><input type="text" id="info-nmLong" placeholder="45"><br>
+        <label for="info-mv">Magnetic Variation: </label><input type="text" id="info-mv" placeholder="16"><br>
+        <label for="info-scale">Sector Scale Value: </label><input type="text" id="info-scale" placeholder="1" value="1"><br>
+    </div>
 <h3>Paste the sector folder from Google Earth:</h3>
     <div>
         <textarea id="root-KML" rows="10" cols="50" placeholder='Sector folder from Google Earth (KML)'></textarea><br>
@@ -43,18 +55,7 @@
 
 <div id="newFile" class="editWindow">
 
-    <h3>First, enter some basic information about the sector:</h3>
-    <div>
-        <label for="info-name">Sector File Name: </label><input type="text" id="info-name" placeholder="Boston Tower v5.0"><br>
-        <label for="info-callsign">Default Callsign: </label><input type="text" id="info-callsign" placeholder="BOS_TWR"><br>
-        <label for="info-airport">Default Airport: </label><input type="text" id="info-airport" maxlength="4" placeholder="KBOS"><br>
-        <label for="info-latitude">Default Latitude: </label><input type="text" id="info-latitude" maxlength="14" placeholder="N042.20.54.750"><br>
-        <label for="info-longitude">Default Longitude: </label><input type="text" id="info-longitude" maxlength="14" placeholder="W071.00.21.920"><br>
-        <label for="info-nmLat">Nautical Miles per Degree of Latitude: </label><input type="text" id="info-nmLat" placeholder="60" value="60"><br>
-        <label for="info-nmLong">Nautical Miles per Degree of Longitude: </label><input type="text" id="info-nmLong" placeholder="45"><br>
-        <label for="info-mv">Magnetic Variation: </label><input type="text" id="info-mv" placeholder="16"><br>
-        <label for="info-scale">Sector Scale Value: </label><input type="text" id="info-scale" placeholder="1" pattern="[0-9]*(\.[1-9]+)?" value="1"><br>
-    </div>
+
 
     
 

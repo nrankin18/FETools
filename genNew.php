@@ -3,11 +3,24 @@ require "genSections.php";
 $year = date('Y');
 $date = date("m/d/Y");
 
+$name = $_POST['name'];
+$callsign = $_POST['callsign'];
+$airport = $_POST['airport'];
+$lat = $_POST['lat'];
+$long = $_POST['long'];
+$nmLat = $_POST['nmLat'];
+$nmLong = $_POST['nmLong'];
+$mv = $_POST['mv'];
+$scale = $_POST['scale'];
+
+$rootKML = NULL;
+
 if ($_POST['rootKML']) {
     $rootKML = new SimpleXMLElement($_POST['rootKML']);
 }
 
-echo "; Copyright $year. All rights reserved. 
+echo "; $name
+; Copyright $year. All rights reserved. 
 ; This file is intended for the sole use of the members of the VATSIM Online
 ; Flight Simulation community. This file may
 ; not be sold, transferred or distributed in any manner.
@@ -23,11 +36,38 @@ echo "; Copyright $year. All rights reserved.
 
 ";
 
+echo "[INFO]\n$name\n$callsign\n$airport\n$lat\n$long\n$nmLat\n$nmLong\n$mv\n$scale\n";
+
 if ($rootKML) {
     $kml = $rootKML->Document->Folder->Folder;
     
     foreach ($kml as $section) {
         switch ($section->name) {
+            case "ARTCC":
+                echo "\n[ARTCC]\n";
+                genARTCC($section);
+                break;
+            case "ARTCC HIGH":
+                echo "\n[ARTCC HIGH]\n";
+                genARTCC($section);
+                break;
+
+            case "ARTCC LOW":
+                echo "\n[ARTCC LOW]\n";
+                genARTCC($section);
+                break;
+            case "SID":
+                echo "\n[SID]\n";
+                genMap($section);
+                break;
+            case "STAR":
+                echo "\n[STAR]\n";
+                genMap($section);
+                break;
+            case "GEO":
+                echo "\n[GEO]\n";
+                genMap($section, true);
+                break;
             case "REGIONS":
                 echo "\n[REGIONS]\n";
                 genRegions($section);

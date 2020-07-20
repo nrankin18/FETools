@@ -1,4 +1,6 @@
 <?php
+require "functions.php";
+
 $sector = $_POST['sector'];
 
 $dom = new DOMDocument();
@@ -9,6 +11,21 @@ $kml = $dom->createElement('kml');
 $dom->appendChild($kml);
 $document = $dom->createElement('Document');
 $kml->appendChild($document);
+
+$folderARTCC = $dom->createElement('Folder');
+$name = $dom->createElement('name', "ARTCC");
+$folderARTCC->appendChild($name);
+$document->appendChild($folderARTCC);
+
+$folderARTCCLow = $dom->createElement('Folder');
+$name = $dom->createElement('name', "ARTCC LOW");
+$folderARTCCLow->appendChild($name);
+$document->appendChild($folderARTCCLow);
+
+$folderARTCCHigh = $dom->createElement('Folder');
+$name = $dom->createElement('name', "ARTCC HIGH");
+$folderARTCCHigh->appendChild($name);
+$document->appendChild($folderARTCCHigh);
 
 $lines = explode("\n", $sector);
 $cleanLines = [""];
@@ -28,6 +45,7 @@ for ($i = 0; $i < sizeof($lines); $i++) {
     }
 }
 
+$state = NULL;
 $lines = $cleanLines;
 
 for ($i = 0; $i < sizeof($lines); $i++) {
@@ -35,11 +53,23 @@ for ($i = 0; $i < sizeof($lines); $i++) {
     $elements = preg_split('/("[^"]*")|\h+/', $line, -1, PREG_SPLIT_NO_EMPTY|PREG_SPLIT_DELIM_CAPTURE);
 
     // Determine state
-    if ($elements[0]=="[REGIONS]") {
+    if ($elements[0]=="[INFO]" || $elements[0] == "VOR" || $elements[0] == "NDB" || $elements[0] == "FIXES" || $elements[0] == "AIRPORT" || $elements[0] == "RUNWAY" || $elements[0] == "LOW AIRWAY" || $elements[0] == "HIGH AIRWAY" ) {
+        $state = "skip ";
+        continue;
+    } else if ($elements[0]=="[REGIONS]") {
         $state = "regions";
         continue;
     } else if ($elements[0]=="[LABELS]") {
         $state = "labels";
+        continue;
+    }  else if ($elements[0]=="[ARTCC]") {
+        $state = "artcc";
+        continue;
+    }   else if ($elements[0]=="[ARTCC" && $elements[1] == "HIGH]") {
+        $state = "artcc high";
+        continue;
+    } else if ($elements[0]=="[ARTCC" && $elements[1] == "LOW]") {
+        $state = "artcc low";
         continue;
     }
 
@@ -75,7 +105,7 @@ for ($i = 0; $i < sizeof($lines); $i++) {
 
         $coords = $dom->createElement('coordinates', $coordinateStr);
         $ring->appendChild($coords);
-    } else if ($state = "labels") {
+    } else if ($state == "labels") {
         $placemark = $dom->createElement('Placemark');
         $document->appendChild($placemark);
         $name = $dom->createElement('name', str_replace('"',"",$elements[0]));
@@ -84,31 +114,49 @@ for ($i = 0; $i < sizeof($lines); $i++) {
         $placemark->appendChild($point);
         $coordinates = $dom->createElement('coordinates', DMStoDec($elements[1], $elements[2]));
         $point->appendChild($coordinates); 
-    }
-}
+    } else if ($state == "skip") {
+        continue;
+    } else if ($state == "artcc" || $state == "artcc high" || $state == "artcc low") {
+        $placemark = $dom->createElement('Placemark');
 
-function DMStoDec($lat, $long) {
-    $lat = explode(".", $lat);
-    $decLat = (0.000277777778)*($lat[2].".".$lat[3]);
-    $decLat += 0.01666667*$lat[1];
-    if (strpos($lat[0], 'N') !== false) {
-        $decLat += floatval(ltrim($lat[0], 'N'));
-    } else {
-        $decLat += floatval(ltrim($lat[0], 'S'));
-        $decLat *= -1;
-    }
+        if ($state == "artcc") {
+            $folderARTCC->appendChild($placemark);
+        } else if ($state == "artcc low") {
+            $folderARTCCLow->appendChild($placemark);
+        } else if ($state == "artcc high") {
+            $folderARTCCHigh->appendChild($placemark);
+        }
 
-    $long = explode(".", $long);
-    $decLong = (0.000277777778)*($long[2].".".$long[3]);
-    $decLong += 0.01666667*$long[1];
-    if (strpos($long[0], 'E') !== false) {
-        $decLong += floatval(ltrim($long[0], 'E'));
-    } else {
-        $decLong += floatval(ltrim($long[0], 'W'));
-        $decLong *= -1;
-    }
+        $name = $dom->createElement('name', $elements[0]);
+        $placemark->appendChild($name);
+        $lineString = $dom->createElement('LineString');
+        $placemark->appendChild($lineString);
+        
+        $prevCoord = DMStoDec($elements[3], $elements[4]);
+        $coordinateStr = DMStoDec($elements[1], $elements[2]) . " " . $prevCoord;
 
-    return $decLong.",".$decLat.",0";
+        $j = $i + 1;
+        while ($j < sizeof($cleanLines)) {
+            $nextLine = $cleanLines[$j];
+            $validNextLine = count(preg_split('/\s+/', $nextLine));
+            if ($validNextLine > 4) {
+                $nextElements = preg_split('/\s+/', $nextLine);
+                $nextCoordinate = DMStoDec($nextElements[1], $nextElements[2]);
+                if ($nextCoordinate == $prevCoord) {
+                    $prevCoord = DMStoDec($nextElements[3], $nextElements[4]);
+                    $coordinateStr .= " " . $prevCoord;
+                    $j++;
+                } else {
+                    break;
+                }
+            } else {
+                break;
+            }
+       }
+        $i = $j - 1;
+        $coordinates = $dom->createElement('coordinates', $coordinateStr);
+        $lineString->appendChild($coordinates);
+    }
 }
 
 $dom->save("sector.kml");

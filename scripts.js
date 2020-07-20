@@ -27,16 +27,37 @@ function genKMLFile() {
 }
 
 function genNewFile() {
+    const infoName = document.getElementById('info-name').value;
+    const infoCallsign = document.getElementById('info-callsign').value;
+    const infoAirport = document.getElementById('info-airport').value;
+    const infoLat = document.getElementById('info-latitude').value;
+    const infoLong = document.getElementById('info-longitude').value;
+    const infoNMLat = document.getElementById('info-nmLat').value;
+    const infoNMLong = document.getElementById('info-nmLong').value;
+    const infoMV = document.getElementById('info-mv').value;
+    const infoScale = document.getElementById('info-scale').value;
     const rootKML = document.getElementById('root-KML').value;
     $.ajax({
         type:"post",
         url:"genNew.php",
         data: {
+            name: infoName,
+            callsign: infoCallsign,
+            airport: infoAirport,
+            lat: infoLat,
+            long: infoLong,
+            nmLat: infoNMLat,
+            nmLong: infoNMLong,
+            mv: infoMV,
+            scale: infoScale,
             rootKML: rootKML
         },
         cache:false,
         success: function (html) {
-            download(("sector.sct2"), html);
+            if (infoName)
+                download((infoName + ".sct2"), html);
+            else 
+                download(("sector.sct2"), html);
         }
     });
 }
