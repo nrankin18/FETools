@@ -27,6 +27,11 @@ $name = $dom->createElement('name', "ARTCC HIGH");
 $folderARTCCHigh->appendChild($name);
 $document->appendChild($folderARTCCHigh);
 
+$folderSID = $dom->createElement('Folder');
+$name = $dom->createElement('name', "SID");
+$folderSID->appendChild($name);
+$document->appendChild($folderSID);
+
 $lines = explode("\n", $sector);
 $cleanLines = [""];
 $j = 0;
@@ -70,6 +75,9 @@ for ($i = 0; $i < sizeof($lines); $i++) {
         continue;
     } else if ($elements[0]=="[ARTCC" && $elements[1] == "LOW]") {
         $state = "artcc low";
+        continue;
+    } else if ($elements[0]=="[SID]") {
+        $state = "sid";
         continue;
     }
 
@@ -156,6 +164,65 @@ for ($i = 0; $i < sizeof($lines); $i++) {
         $i = $j - 1;
         $coordinates = $dom->createElement('coordinates', $coordinateStr);
         $lineString->appendChild($coordinates);
+    } else if ($state == "sid") {
+        if ($state == "sid") {
+        }
+
+        $pattern = "~(N|S)[0-9]{1,3}\.[0-9]{1,2}\.[0-9]{1,2}\.[0-9]{1,4}~";
+        if (count($elements) > 4 && !preg_match($pattern, $elements[0])) { 
+            $folderSIDName = $dom->createElement('Folder');
+            $elemi = 1;
+            $nameString = $elements[0];
+            while (!preg_match($pattern, $elements[$elemi])) {
+                $nameString = $nameString." ".$elements[$elemi];
+                $elemi++;
+            }
+            $name = $dom->createElement('name', $nameString);
+            $folderSIDName->appendChild($name);
+            $folderSID->appendChild($folderSIDName);
+
+            $j = $i + 1;
+
+            while ($j < sizeof($cleanLines)) {
+                $placemark = $dom->createElement('Placemark');
+                $nextLine = preg_split('/\s+/', $cleanLines[$j]);
+                if (preg_match($pattern, $nextLine[0])) { //adding sid points
+                    $lineString = $dom->createElement('LineString');
+                    $placemark->appendChild($lineString);
+                    
+                    $prevCoord = DMStoDec($nextLine[2], $nextLine[3]);
+                    $coordinateStr = DMStoDec($nextLine[0], $nextLine[1]) . " " . $prevCoord;
+
+
+                    $k = $j + 1;
+                    while ($k < sizeof($cleanLines)) {
+                        $nextLine = preg_split('/\s+/', $cleanLines[$k]);
+                        if (preg_match($pattern, $nextLine[0])) {
+                            $nextCoordinate = DMStoDec($nextLine[0], $nextLine[1]);
+                            if ($nextCoordinate == $prevCoord) {
+                                $prevCoord = DMStoDec($nextLine[2], $nextLine[3]);
+                                $coordinateStr .= " " . $prevCoord;
+                                $k++;
+                            } else {
+                                break;
+                            }
+                        } else {
+                            break;
+                        }
+                   }
+                    $j = $k - 1;
+
+                      
+                    $coordinates = $dom->createElement('coordinates', $coordinateStr);
+                    $lineString->appendChild($coordinates);
+                    $folderSIDName->appendChild($placemark);
+                    $j++;
+                } else {
+                    break;
+                }
+            }
+            $i = $j - 1;
+        }
     }
 }
 
