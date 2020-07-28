@@ -32,6 +32,16 @@ $name = $dom->createElement('name', "SID");
 $folderSID->appendChild($name);
 $document->appendChild($folderSID);
 
+$folderSTAR = $dom->createElement('Folder');
+$name = $dom->createElement('name', "STAR");
+$folderSTAR->appendChild($name);
+$document->appendChild($folderSTAR);
+
+$folderGEO = $dom->createElement('Folder');
+$name = $dom->createElement('name', "GEO");
+$folderGEO->appendChild($name);
+$document->appendChild($folderGEO);
+
 $lines = explode("\n", $sector);
 $cleanLines = [""];
 $j = 0;
@@ -58,7 +68,7 @@ for ($i = 0; $i < sizeof($lines); $i++) {
     $elements = preg_split('/("[^"]*")|\h+/', $line, -1, PREG_SPLIT_NO_EMPTY|PREG_SPLIT_DELIM_CAPTURE);
 
     // Determine state
-    if ($elements[0]=="[INFO]" || $elements[0] == "VOR" || $elements[0] == "NDB" || $elements[0] == "FIXES" || $elements[0] == "AIRPORT" || $elements[0] == "RUNWAY" || $elements[0] == "LOW AIRWAY" || $elements[0] == "HIGH AIRWAY" ) {
+    if ($elements[0]=="[INFO]" || $elements[0] == "VOR" || $elements[0] == "NDB" || $elements[0] == "FIXES" || $elements[0] == "AIRPORT" || $elements[0] == "RUNWAY" || $elements[0] == "LOW AIRWAY" || $elements[0] == "HIGH AIRWAY" || $elements[0] =="#define" ) {
         $state = "skip ";
         continue;
     } else if ($elements[0]=="[REGIONS]") {
@@ -78,6 +88,12 @@ for ($i = 0; $i < sizeof($lines); $i++) {
         continue;
     } else if ($elements[0]=="[SID]") {
         $state = "sid";
+        continue;
+    } else if ($elements[0]=="[STAR]") {
+        $state = "star";
+        continue;
+    } else if ($elements[0]=="[GEO]") {
+        $state = "geo";
         continue;
     }
 
@@ -164,10 +180,7 @@ for ($i = 0; $i < sizeof($lines); $i++) {
         $i = $j - 1;
         $coordinates = $dom->createElement('coordinates', $coordinateStr);
         $lineString->appendChild($coordinates);
-    } else if ($state == "sid") {
-        if ($state == "sid") {
-        }
-
+    } else if ($state == "sid" || $state == "star") {
         $pattern = "~(N|S)[0-9]{1,3}\.[0-9]{1,2}\.[0-9]{1,2}\.[0-9]{1,4}~";
         if (count($elements) > 4 && !preg_match($pattern, $elements[0])) { 
             $folderSIDName = $dom->createElement('Folder');
@@ -177,9 +190,13 @@ for ($i = 0; $i < sizeof($lines); $i++) {
                 $nameString = $nameString." ".$elements[$elemi];
                 $elemi++;
             }
+
             $name = $dom->createElement('name', $nameString);
             $folderSIDName->appendChild($name);
-            $folderSID->appendChild($folderSIDName);
+            if ($state == "sid")
+                $folderSID->appendChild($folderSIDName);
+            else
+                $folderSTAR->appendChild($folderSIDName);
 
             $j = $i + 1;
 
@@ -223,7 +240,52 @@ for ($i = 0; $i < sizeof($lines); $i++) {
             }
             $i = $j - 1;
         }
+    } else if ($state == "geo") {
+        $placemark = $dom->createElement('Placemark');
+
+        $folderGEO->appendChild($placemark);
+
+        $lineString = $dom->createElement('LineString');
+        $placemark->appendChild($lineString);
+        
+        $prevCoord = DMStoDec($elements[2], $elements[3]);
+        $coordinateStr = DMStoDec($elements[0], $elements[1]) . " " . $prevCoord;
+
+        $j = $i + 1;
+        while ($j < sizeof($cleanLines)) {
+            $nextLine = $cleanLines[$j];
+            $validNextLine = count(preg_split('/\s+/', $nextLine));
+            if ($validNextLine > 4) {
+                $nextElements = preg_split('/\s+/', $nextLine);
+                $nextCoordinate = DMStoDec($nextElements[0], $nextElements[1]);
+                if ($nextCoordinate == $prevCoord) {
+                    $prevCoord = DMStoDec($nextElements[2], $nextElements[3]);
+                    $coordinateStr .= " " . $prevCoord;
+                    $j++;
+                } else {
+                    break;
+                }
+            } else {
+                break;
+            }
+       }
+        $i = $j - 1;
+        $coordinates = $dom->createElement('coordinates', $coordinateStr);
+        $lineString->appendChild($coordinates);
     }
 }
+
+$domFolders = $document->childNodes;
+$foldersToRemove = array();
+
+foreach ($domFolders as $folder) {
+  if (count($folder->childNodes) == 1)
+    $foldersToRemove[] = $folder;
+}
+
+foreach( $foldersToRemove as $folder ){
+  $folder->parentNode->removeChild($folder);
+}
+    
 
 $dom->save("sector.kml");

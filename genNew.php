@@ -39,7 +39,7 @@ echo "; $name
 echo "[INFO]\n$name\n$callsign\n$airport\n$lat\n$long\n$nmLat\n$nmLong\n$mv\n$scale\n";
 
 if ($rootKML) {
-    $kml = $rootKML->Document->Folder->Folder;
+    $kml = $rootKML->Folder->Folder;
     
     foreach ($kml as $section) {
         switch ($section->name) {
@@ -58,7 +58,7 @@ if ($rootKML) {
                 break;
             case "SID":
                 echo "\n[SID]\n";
-                genMap($section);
+                genMap($section, 0);
                 break;
             case "STAR":
                 echo "\n[STAR]\n";
