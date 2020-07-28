@@ -9,21 +9,45 @@ function showNewFile() {
 }
 
 function genKMLFile() {
-    const sector = document.getElementById('reverseTxt').value;
-    $.ajax({
-        type:"post",
-        url:"genKML.php",
-        data: {
-            sector: sector
-        },
-        cache:false,
-        success: function () {
-            const link = document.createElement("a");
-            link.download = "sector.kml";
-            link.href = "sector.kml";
-            link.click();
+    let sector = document.getElementById('reverseTxt').value;
+    
+    let file = document.getElementById("sctFile").files[0];
+    if (file) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          sector = reader.result;
+          $.ajax({
+            type:"post",
+            url:"genKML.php",
+            data: {
+                sector: sector
+            },
+            cache:false,
+            success: function () {
+                const link = document.createElement("a");
+                link.download = "sector.kml";
+                link.href = "sector.kml";
+                link.click();
+            }
+        });
         }
-    });
+        reader.readAsText(file);
+    } else {
+        $.ajax({
+            type:"post",
+            url:"genKML.php",
+            data: {
+                sector: sector
+            },
+            cache:false,
+            success: function () {
+                const link = document.createElement("a");
+                link.download = "sector.kml";
+                link.href = "sector.kml";
+                link.click();
+            }
+        });
+    }
 }
 
 function genNewFile() {

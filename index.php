@@ -42,9 +42,13 @@
 </div>
 
 <div id="editFile" class="editWindow">
-    <h3>Convert existing sector file sections into a Google Earth KML format by pasting them below: </h3>
+    <h3>Convert an existing sector file into a Google Earth KML format by pasting it below or uploading the file: </h3>
     <div>
-        <textarea id="reverseTxt" rows="10" cols="50" placeholder="Sector file text"></textarea><br>
+        <textarea id="reverseTxt" rows="10" cols="50" placeholder="Paste sector file text here"></textarea>
+        <br>
+        <span>Or upload the full file:</span>
+        <br>
+        <input type="file" id="sctFile" accept=".sct2"> 
     </div>
     <br>
     <button onclick="genKMLFile()">Generate KML file</button>
