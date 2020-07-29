@@ -1,52 +1,30 @@
-body.help {
-    margin: 0 2% 150px 2%;
-}
-
 h1 {
     text-align: center;
     font-size: 3em;
-}
-
-h2 {
-    text-align: center;
-}
-
-h2.help {
-    font-size: 2.2em;
-}
-
-h3.help {
-    font-size: 2em;
-    margin: 10px 0;
-}
-
-h4.help {
-    font-size: 1.5em;
-    margin: 15px 0 10px 0;
-}
-
-h5.help {
-    font-size: 1.2em;
-    margin: 10px 0;
-}
-
-img {
-    margin: 5px 35px;
-    max-width: 50%;
-    max-height: 500px;
 }
 
 li {
     margin: 5px 0;
 }
 
-div.options {
+img.logo {
+    position: absolute;
+    width: 100px;
+    margin-left: 50px;
+    margin-top: -10px;
+}
+
+div.menu {
     display: flex;
     justify-content: center;
 }
 
 button {
     font-size: 1em;
+}
+
+input {
+    margin-top: 10px;
 }
 
 button.menu {
@@ -61,18 +39,21 @@ div.editWindow {
     display: none;
 }
 
-div {
-    margin: 0 25px;
+.loader {
+    border: 5px solid #f3f3f3; /* Light grey */
+    border-top: 5px solid #3498db; /* Blue */
+    border-radius: 50%;
+    width: 12px;
+    height: 12px;
+    animation: spin 2s linear infinite;
+    visibility: hidden;
 }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
 
-input {
-    margin: 8px 0;
-}
-
-#radius {
-    width: 50px;
-}
-
-textarea {
-    margin-top: 8px
-}
+ .status {
+      visibility: hidden;
+  }

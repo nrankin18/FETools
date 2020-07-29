@@ -8,15 +8,15 @@
     <script src="scripts.js"></script>
 </head>
 <body>
-
+<img src="logo.png" class="logo">
 <!-- Header -->
 <h1>Sector File Generator</h1>
 <hr>
-<div class="options">
+<div class="menu">
     <span>
         <button onclick="showNewFile()" class="menu">Create a sector file</button>
         <button onclick="showEditFile()" class="menu">Convert .sct2 to .kml</button>
-        <button onclick="window.open('help.php')" class="menu">Learn how to use this tool</button>
+        <button class="menu" disabled>Help</button>
     </span>
 </div>
 
@@ -35,23 +35,25 @@
     </div>
 <h3>Paste the sector folder from Google Earth:</h3>
     <div>
-        <textarea id="root-KML" rows="10" cols="50" placeholder='Sector folder from Google Earth (KML)'></textarea><br>
+        <textarea id="createText" rows="10" cols="50" placeholder='Sector folder from Google Earth (KML)'></textarea><br>
     </div>
     <br>
-    <button onclick="genNewFile()">Generate File</button>
+    <button id="submitNew" onclick="createFile()">Generate File</button>
+    <div class="loader" id="loaderNew" style="display:inline-block"></div>
+    <div style="display:inline-block" id="statusNew" class="status">status</div>
 </div>
 
-<div id="editFile" class="editWindow">
+<div id="convertFile" class="editWindow">
     <h3>Convert an existing sector file into a Google Earth KML format by pasting it below or uploading the file: </h3>
     <div>
-        <textarea id="reverseTxt" rows="10" cols="50" placeholder="Paste sector file text here"></textarea>
-        <br>
-        <span>Or upload the full file:</span>
-        <br>
-        <input type="file" id="sctFile" accept=".sct2"> 
+        <textarea id="convertText" rows="10" cols="50" placeholder="Paste sector file text here"></textarea>
+        <div>Or upload the sector file:</div>
+        <input type="file" id="convertSctFile" accept=".sct2"> 
     </div>
     <br>
-    <button onclick="genKMLFile()">Generate KML file</button>
+    <button onclick="convertFile()" id="submitConvert">Generate KML file</button>
+    <div class="loader" id="loaderConvert" style="display:inline-block"></div>
+    <div style="display:inline-block" id="statusConvert" class="status">status</div>
 </div>
 </html>
 
