@@ -37,6 +37,20 @@
     <div>
         <textarea id="createText" rows="10" cols="50" placeholder='Sector folder from Google Earth (KML)'></textarea><br>
     </div>
+    <h3>Optionally, you can upload NavData from Navigraph:</h3>
+    <div>
+        <label for="lat-center">Center of Sector: </label>
+        <input type="text" id="lat-center" maxlength="14" placeholder="42.7170422">
+        <input type="text" id="long-center" maxlength="14" placeholder="-71.1235333"><br>
+        <span>Include all VORs, NDBs, fixes, airways and airports within a </span>
+        <input type="text" id="radius" maxlength="3" placeholder="100">
+        <span> nm radius</span><br>
+        <label for="airports-txt">Upload Airports.txt: </label><input type="file" id="airports-txt" accept=".txt"> <br>
+        <label for="navaids-txt">Upload Navaids.txt: </label><input type="file" id="navaids-txt" accept=".txt"> <br>
+        <label for="waypoints-txt">Upload Waypoints.txt: </label><input type="file" id="waypoints-txt" accept=".txt"> <br>
+        <label for="ats-txt">Upload ATS.txt: </label><input type="file" id="ats-txt" accept=".txt"> <br><br>
+    </div>
+
     <br>
     <button id="submitNew" onclick="createFile()">Generate File</button>
     <div class="loader" id="loaderNew" style="display:inline-block"></div>
@@ -56,62 +70,3 @@
     <div style="display:inline-block" id="statusConvert" class="status">status</div>
 </div>
 </html>
-
-<!-- >
-
-<div id="newFile" class="editWindow">
-
-
-
-    
-
-    <h3>Optionally, you can upload NavData from Navigraph:</h3>
-    <div>
-        <label for="lat-center">Center of Sector: </label>
-        <input type="text" id="lat-center" maxlength="14" placeholder="42.7170422">
-        <input type="text" id="long-center" maxlength="14" placeholder="-71.1235333"><br>
-        <span>Include all VORs, NDBs, fixes, airways and airports within a </span>
-        <input type="text" id="radius" maxlength="3" placeholder="100">
-        <span> nm radius</span><br>
-        <label for="airports-txt">Upload Airports.txt: </label><input type="file" id="airports-txt" accept=".txt"> <br>
-        <label for="navaids-txt">Upload Navaids.txt: </label><input type="file" id="navaids-txt" accept=".txt"> <br>
-        <label for="waypoints-txt">Upload Waypoints.txt: </label><input type="file" id="waypoints-txt" accept=".txt"> <br>
-        <label for="ats-txt">Upload ATS.txt: </label><input type="file" id="ats-txt" accept=".txt"> <br><br>
-    </div>
-
-    <script>
-        $(document).ready(function(){
-            $("#airports-txt").change(function(){
-                readAirports();
-            });
-            $("#navaids-txt").change(function(){
-                readNavaids();
-            });
-            $("#waypoints-txt").change(function(){
-                readWaypoints();
-            });
-            $("#ats-txt").change(function(){
-                readATS();
-            });
-            $("#lat-center").change(function(){
-                readAirports();
-                readNavaids();
-                readWaypoints();
-                readATS();
-            });
-            $("#long-center").change(function(){
-                readAirports();
-                readNavaids();
-                readWaypoints();
-                readATS();
-            });
-            $("#radius").change(function(){
-                readAirports();
-                readNavaids();
-                readWaypoints();
-                readATS();
-            });
-        });
-    </script>
-
-</div>

@@ -1,4 +1,5 @@
 var convertStatus;
+var createStatus;
 
 window.onload = function () {
     convertStatus = document.getElementById('statusConvert');
@@ -49,7 +50,7 @@ function enableInput() {
 
 function convertFile() {
     disableInput();
-    convertStatus.innerHTML =  "Reading file...";
+    convertStatus.innerHTML =  "Loading data...";
     console.log(convertStatus);
     showConvertLoading();
 
@@ -57,7 +58,7 @@ function convertFile() {
     
     let file = document.getElementById("convertSctFile").files[0];
     if (file) {
-        convertStatus = "Reading file...";
+        convertStatus.innerHTML = "Reading file...";
         const reader = new FileReader();
         reader.onload = function(e) {
             sector = reader.result;   
@@ -89,7 +90,7 @@ function sendConvert(sector) {
     });
 }
 
-function createFile() {
+async function createFile() {
     showNewLoading();
     createStatus.innerHTML = "Loading data...";
     disableInput();
@@ -103,6 +104,16 @@ function createFile() {
     const infoMV = document.getElementById('info-mv').value;
     const infoScale = document.getElementById('info-scale').value;
     const rootKML = document.getElementById('createText').value;
+    
+    createStatus.innerHTML = "Reading airports.txt...";
+    const airportData = await readFile(document.getElementById("airports-txt").files[0]);
+    createStatus.innerHTML = "Reading navaids.txt...";
+    const navaidData = await readFile(document.getElementById("navaids-txt").files[0]);
+    createStatus.innerHTML = "Reading waypoints.txt...";
+    const waypointsData = await readFile(document.getElementById("waypoints-txt").files[0]);
+    createStatus.innerHTML = "Reading ats.txt...";
+    const airwaysData = await readFile(document.getElementById("ats-txt").files[0]);
+
     createStatus.innerHTML = "Creating file...";
     $.ajax({
         type:"post",
@@ -117,7 +128,11 @@ function createFile() {
             nmLong: infoNMLong,
             mv: infoMV,
             scale: infoScale,
-            rootKML: rootKML
+            rootKML: rootKML,
+            airports: airportData,
+            navaids: navaidData,
+            waypoints: waypointsData,
+            airways: airwaysData
         },
         cache:false,
         success: function (html) {
@@ -142,4 +157,18 @@ function download(filename, text) {
     element.click();
 
     document.body.removeChild(element);
+}
+
+function readFile(file) {
+    if (file) {
+        return new Promise((resolve, reject) => {
+            let reader = new FileReader();
+            reader.onload = () => {
+              resolve(reader.result);
+            };
+            reader.onerror = reject;
+            reader.readAsText(file);
+          })
+    }
+    return "";
 }
