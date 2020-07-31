@@ -1,26 +1,32 @@
 <?php
 
-// Formats coordinates from decimal (xx.xxxx..., xx.xxxx) to degrees, minutes and seconds with a prefix (N/Sdd.mm.ss.sss E/Wdd.mm.ss.sss)
-function formatCoord($decLat, $decLong) {
-    $latPre = "N";
-    $longPre = "E";
+// Formats coordinate from decimal (xx.xxxx..., xx.xxxx) to degrees, minutes and seconds with a prefix (N/Sdd.mm.ss.sss E/Wdd.mm.ss.sss)
+function DDToDMS($decLat, $decLong) {
+    return DDLatToDMS($decLat)." ".DDLongToDMS($decLong);
+}
 
+
+function DDLatToDMS ($decLat) {
+    $latPre = "N";
     if ($decLat < 0) {
         $latPre = 'S';
         $decLat = abs($decLat);
     }
+    return $latPre.decToDMS($decLat);
+}
 
+
+function DDLongToDMS ($decLong) {
+    $longPre = "E";
     if ($decLong < 0) {
         $longPre = 'W';
         $decLong = abs($decLong);
     }
-    return $latPre.DDtoDMS($decLat).' '.$longPre.DDtoDMS($decLong);
+    return $longPre.decToDMS($decLong);
 }
 
-
-// Formats coordinates from decimal (xx.xxxx...) to degrees, minutes and seconds (dd.mm.ss.sss). Do not pass negative values
-function DDtoDMS($dec)
-{
+// Formats coordinates from decimal (xx.xxxx...) to degrees, minutes and seconds (dd.mm.ss.sss). Do not pass negative values. Helper function
+function decToDMS($dec) {
     $deg = floor($dec);
     $tmpmin = ($dec-$deg)*60;
     $min = floor($tmpmin);
@@ -96,3 +102,32 @@ function DMStoDec($lat, $long) {
 
     return $decLong.",".$decLat.",0";
 }
+
+/**
+ * Calculates the great-circle distance between two points, with
+ * the Haversine formula.
+ * @param float $latitudeFrom Latitude of start point in [deg decimal]
+ * @param float $longitudeFrom Longitude of start point in [deg decimal]
+ * @param float $latitudeTo Latitude of target point in [deg decimal]
+ * @param float $longitudeTo Longitude of target point in [deg decimal]
+ * @param float $earthRadius Mean earth radius in [m]
+ * @return float Distance between points in [m] (same as earthRadius)
+ */
+function distance($latitudeFrom, $longitudeFrom, $latitudeTo, $longitudeTo, $earthRadius = 6371000) {
+    // convert from degrees to radians
+    $latFrom = deg2rad($latitudeFrom);
+    $lonFrom = deg2rad($longitudeFrom);
+    $latTo = deg2rad($latitudeTo);
+    $lonTo = deg2rad($longitudeTo);
+  
+    $latDelta = $latTo - $latFrom;
+    $lonDelta = $lonTo - $lonFrom;
+  
+    $angle = 2 * asin(sqrt(pow(sin($latDelta / 2), 2) +
+      cos($latFrom) * cos($latTo) * pow(sin($lonDelta / 2), 2)));
+    return $angle * $earthRadius;
+  }
+
+  function NMtoMeters ($nm) {
+    return $nm * 1852;
+  }

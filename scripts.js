@@ -104,7 +104,11 @@ async function createFile() {
     const infoMV = document.getElementById('info-mv').value;
     const infoScale = document.getElementById('info-scale').value;
     const rootKML = document.getElementById('createText').value;
-    
+
+    const latCenter = document.getElementById('lat-center').value;
+    const longCenter = document.getElementById('long-center').value;
+    const range = document.getElementById('radius').value;
+
     createStatus.innerHTML = "Reading airports.txt...";
     const airportData = await readFile(document.getElementById("airports-txt").files[0]);
     createStatus.innerHTML = "Reading navaids.txt...";
@@ -129,6 +133,11 @@ async function createFile() {
             mv: infoMV,
             scale: infoScale,
             rootKML: rootKML,
+
+            latCenter: latCenter,
+            longCenter: longCenter,
+            range: range,
+
             airports: airportData,
             navaids: navaidData,
             waypoints: waypointsData,

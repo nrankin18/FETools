@@ -65,3 +65,13 @@ function genLabels($labels) {
         echo " ".formatCoord($parts[1], $parts[0])."\n";
     }
 }
+
+function genWaypoints($waypoints, $latCenter, $longCenter, $range) {
+    $waypoints = explode("\n", $waypoints);
+    foreach ($waypoints as $waypoint) {
+        $waypoint = explode(",", $waypoint);
+        if (len($waypoint) >= 3)
+            if ($waypoint[2] && distance($waypoint[1], $waypoint[2], $latCenter, $longCenter) < NMtoMeters($range))
+                echo $waypoint[0]." ".DDToDMS($waypoint[1], $waypoint[2])."\n";
+    }
+}

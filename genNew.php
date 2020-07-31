@@ -15,9 +15,29 @@ $scale = $_POST['scale'];
 
 $rootKML = NULL;
 
-if ($_POST['rootKML']) {
+if ($_POST['rootKML'])
     $rootKML = new SimpleXMLElement($_POST['rootKML']);
-}
+
+$latCenter = $_POST['latCenter'];
+$longCenter = $_POST['longCenter'];
+$range = $_POST['range'];
+
+$airports = NULL;
+$navaids = NULL;
+$waypoints = NULL;
+$airways = NULL;
+
+if ($_POST['airports'])
+    $airports = $_POST['airports'];
+
+if ($_POST['navaids'])
+    $navaids = $_POST['navaids'];
+
+if ($_POST['waypoints'])
+    $waypoints = $_POST['waypoints'];
+
+if ($_POST['airways'])
+    $airways = $_POST['airways'];
 
 echo "; $name
 ; Copyright $year. All rights reserved. 
@@ -78,4 +98,10 @@ if ($rootKML) {
                 break;
         }
     }
+
+}
+
+if ($waypoints) {
+    echo "\n[FIXES]\n";
+    genWaypoints($waypoints, $latCenter, $longCenter, $range);
 }
