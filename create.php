@@ -113,6 +113,10 @@ if ($navAirports) {
     genAirports($navAirports, $navLatCenter, $navLongCenter, $navRadius);
 }
 
+if ($navATS) {
+    genAirways($navATS, $navLatCenter, $navLongCenter, $navRadius);
+}
+
 function genARTCC($section)
 {
     $lines = $section->Placemark;
@@ -362,7 +366,7 @@ class Runway
 
     function __toString()
     {
-        return $this->startID." ".$this->endID." ".$this->startMag." ".$this->endMag." ".DDtoDMS($this->startLat, $this->startLong)." ".DDtoDMS($this->endLat, $this->endLong);
+        return $this->startID . " " . $this->endID . " " . $this->startMag . " " . $this->endMag . " " . DDtoDMS($this->startLat, $this->startLong) . " " . DDtoDMS($this->endLat, $this->endLong);
     }
 }
 
@@ -383,4 +387,66 @@ function oppRwyID($rwy)
                 return $num . 'R';
         }
     return $num;
+}
+
+function genAirways($airways, $latCenter, $longCenter, $range)
+{
+    $lowAirways = [];
+    $highAirways = [];
+    $airways = explode("\n\r\n", $airways);
+    foreach ($airways as $airway) {
+        $airway = explode("\n", $airway);
+        $airwayName = "";
+        foreach ($airway as $waypoint) {
+            $waypointDetails = explode(",", $waypoint);
+            if (count($waypointDetails) > 1) {
+                if (count($waypointDetails) < 4) {
+                    $airwayName = $waypointDetails[1];
+                } else if ((distance($waypointDetails[2], $waypointDetails[3], $latCenter, $longCenter) < NMtoMeters($range)) || (distance($waypointDetails[5], $waypointDetails[6], $latCenter, $longCenter) < NMtoMeters($range))) {
+                    if ($airwayName[0] == "V" || $airwayName[0] == "T") {
+                        array_push($lowAirways, new Airway($airwayName, $waypointDetails[2], $waypointDetails[3], $waypointDetails[5], $waypointDetails[6]));
+                    } else if ($airwayName[0] == "J" || $airwayName[0] == "Q") {
+                        array_push($highAirways, new Airway($airwayName, $waypointDetails[2], $waypointDetails[3], $waypointDetails[5], $waypointDetails[6]));
+                    }
+                }
+            }
+        }
+    }
+
+    echo "\n[LOW AIRWAY]\n";
+    foreach ($lowAirways as $airway) {
+        echo "$airway\n";
+    }
+
+    echo "\n[HIGH AIRWAY]\n";
+    foreach ($highAirways as $airway) {
+        echo "$airway\n";
+    }
+}
+
+class Airway
+{
+    public $id;
+
+    public $startLat;
+    public $startLong;
+
+    public $endLat;
+    public $endLong;
+
+    function __construct($id, $startLat, $startLong, $endLat, $endLong)
+    {
+        $this->id = $id;
+
+        $this->startLat = $startLat;
+        $this->startLong = $startLong;
+
+        $this->endLat = $endLat;
+        $this->endLong = $endLong;
+    }
+
+    function __toString()
+    {
+        return $this->id . " " . DDtoDMS($this->startLat, $this->startLong) . " " . DDtoDMS($this->endLat, $this->endLong);
+    }
 }
