@@ -54,7 +54,7 @@
         </div>
 
         <br>
-        <button id="createSubmit" onclick="createFile()">Generate File</button>
+        <button id="createSubmit" onclick="createFile()">Create Sector File</button>
         <div class="loader" id="createLoader" style="display:inline-block"></div>
         <div style="display:inline-block" id="createStatus" class="status">status</div>
     </div>
@@ -67,7 +67,7 @@
             <input type="file" id="sctFile" accept=".sct2">
         </div>
         <br>
-        <button onclick="convertFile()" id="convertSubmit">Generate KML file</button>
+        <button onclick="convertFile()" id="convertSubmit">Convert to KML file</button>
         <div class="loader" id="convertLoader" style="display:inline-block"></div>
         <div style="display:inline-block" id="convertStatus" class="status">status</div>
     </div>

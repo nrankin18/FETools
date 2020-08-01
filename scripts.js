@@ -1,7 +1,8 @@
 var convertStatus;
 var createStatus;
+var requireNavInfo = false;
 
-window.onload = function () {
+window.onload = function() {
     createStatus = document.getElementById('createStatus');
     convertStatus = document.getElementById('convertStatus');
 };
@@ -42,11 +43,48 @@ function enableSubmit() {
     document.getElementById('convertSubmit').disabled = false;
 }
 
+function testRequireNavInfo() {
+    if ($('#navAirports').get(0).files.length === 0 &&
+        $('#navNavaids').get(0).files.length === 0 &&
+        $('#navWaypoints').get(0).files.length === 0 &&
+        $('#navATS').get(0).files.length === 0) {
+        requireNavInfo = false;
+    } else {
+        requireNavInfo = true;
+    }
+
+}
+
+$(document).ready(function() {
+    $('#navAirports').on("change", function() {
+        testRequireNavInfo();
+    });
+    $('#navNavaids').on("change", function() {
+        testRequireNavInfo();
+    });
+    $('#navWaypoints').on("change", function() {
+        testRequireNavInfo();
+    });
+    $('#navATS').on("change", function() {
+        testRequireNavInfo();
+    });
+});
+
+
 async function createFile() {
+    const navLatCenter = document.getElementById('navLatCenter').value;
+    const navLongCenter = document.getElementById('navLongCenter').value;
+    const navRadius = document.getElementById('navRadius').value;
+
+    if (requireNavInfo && (navLongCenter.length < 1 || navLongCenter.length < 1 || navRadius.length < 1)) {
+        alert("Please enter location information to filter Navigraph data");
+        return false;
+    }
+
     disableSubmit();
     createStatus.innerHTML = "Loading data...";
     showCreateLoading();
-    
+
     const infoName = document.getElementById('infoName').value;
     const infoCallsign = document.getElementById('infoCallsign').value;
     const infoAirport = document.getElementById('infoAirport').value;
@@ -58,9 +96,7 @@ async function createFile() {
     const infoScale = document.getElementById('infoScale').value;
     const kmlText = document.getElementById('kmlText').value;
 
-    const navLatCenter = document.getElementById('navLatCenter').value;
-    const navLongCenter = document.getElementById('navLongCenter').value;
-    const navRadius = document.getElementById('navRadius').value;
+
 
     createStatus.innerHTML = "Reading airports.txt...";
     const navAirports = await readFile(document.getElementById("navAirports").files[0]);
@@ -73,8 +109,8 @@ async function createFile() {
 
     createStatus.innerHTML = "Creating file...";
     $.ajax({
-        type:"post",
-        url:"create.php",
+        type: "post",
+        url: "create.php",
         data: {
             infoName: infoName,
             infoCallsign: infoCallsign,
@@ -96,12 +132,12 @@ async function createFile() {
             navWaypoints: navWaypoints,
             navATS: navATS
         },
-        cache:false,
-        success: function (html) {
+        cache: false,
+        success: function(html) {
             createStatus.innerHTML = "Downloading file...";
             if (infoName)
                 download((infoName + ".sct2"), html);
-            else 
+            else
                 download(("sector.sct2"), html);
             enableSubmit();
         }
@@ -110,11 +146,11 @@ async function createFile() {
 
 async function convertFile() {
     disableSubmit();
-    convertStatus.innerHTML =  "Loading data...";
+    convertStatus.innerHTML = "Loading data...";
     showConvertLoading();
 
     let sctText = document.getElementById('sctText').value;
-    
+
     let sctFile = document.getElementById("sctFile").files[0];
     if (sctFile) {
         convertStatus.innerHTML = "Reading file...";
@@ -122,18 +158,18 @@ async function convertFile() {
     }
 
     $.ajax({
-        type:"post",
-        url:"genKML.php",
+        type: "post",
+        url: "convert.php",
         data: {
             sct: sctText
         },
-        cache:false,
-        success: function () {
-            convertStatus.innerHTML =  "Downloading file...";
+        cache: false,
+        success: function() {
+            convertStatus.innerHTML = "Downloading file...";
             const link = document.createElement("a");
             link.download = "sector.kml";
             link.href = "sector.kml";
-            link.click(); 
+            link.click();
             enableSubmit();
         }
     });
@@ -158,11 +194,11 @@ function readFile(file) {
         return new Promise((resolve, reject) => {
             let reader = new FileReader();
             reader.onload = () => {
-              resolve(reader.result);
+                resolve(reader.result);
             };
             reader.onerror = reject;
             reader.readAsText(file);
-          })
+        })
     }
     return "";
 }

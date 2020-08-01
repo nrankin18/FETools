@@ -1,7 +1,7 @@
 <?php
 require "functions.php";
 
-$sector = $_POST['sector'];
+$sector = $_POST['sct'];
 
 $dom = new DOMDocument();
 $dom->encoding = 'utf-8';
