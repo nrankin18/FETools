@@ -108,7 +108,8 @@ async function createFile() {
     const infoScale = document.getElementById('infoScale').value;
     const kmlText = document.getElementById('kmlText').value;
 
-
+    const sectorColor = document.getElementById('sectorColor').value;
+    const labelColor = document.getElementById('labelColor').value;
 
     createStatus.innerHTML = "Reading airports.txt...";
     const navAirports = await readFile(document.getElementById("navAirports").files[0]);
@@ -134,6 +135,9 @@ async function createFile() {
             infoMV: infoMV,
             infoScale: infoScale,
             kmlText: kmlText,
+
+            sectorColor: sectorColor,
+            labelColor: labelColor,
 
             navLatCenter: navLatCenter,
             navLongCenter: navLongCenter,

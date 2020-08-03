@@ -28,8 +28,8 @@
             <label for="infoName">Sector File Name: </label><input type="text" id="infoName" placeholder="Boston Tower v5.0"><br>
             <label for="infoCallsign">Default Callsign: </label><input type="text" id="infoCallsign" placeholder="BOS_TWR"><br>
             <label for="infoAirport">Default Airport: </label><input type="text" id="infoAirport" maxlength="4" placeholder="KBOS"><br>
-            <label for="infoLat">Default Latitude: </label><input type="text" id="infoLat" maxlength="14" placeholder="N042.20.54.750"><br>
-            <label for="infoLong">Default Longitude: </label><input type="text" id="infoLong" maxlength="14" placeholder="W071.00.21.920"><br>
+            <label for="infoLat">Default Latitude: </label><input type="text" id="infoLat" maxlength="14" placeholder="42.7170422"><br>
+            <label for="infoLong">Default Longitude: </label><input type="text" id="infoLong" maxlength="14" placeholder="-71.1235333"><br>
             <label for="infoNMLat">Nautical Miles per Degree of Latitude: </label><input type="text" id="infoNMLat" placeholder="60" value="60"><br>
             <label for="infoNMLong">Nautical Miles per Degree of Longitude: </label><input type="text" id="infoNMLong" placeholder="45"><br>
             <label for="infoMV">Magnetic Variation: </label><input type="text" id="infoMV" placeholder="16"><br>
@@ -39,6 +39,8 @@
         <div>
             <textarea id="kmlText" rows="10" cols="50" placeholder='Sector folder from Google Earth (KML)'></textarea><br>
         </div>
+        <label for="sectorColor">Default Map Color (can be left blank): </label><input type="text" id="sectorColor"><br>
+        <label for="labelColor">Default Label Color (can be left blank): </label><input type="text" id="labelColor"><br>
         <h3>Optionally, you can upload NavData from Navigraph:</h3>
         <div>
             <label for="navLatCenter">Center of Sector: </label>
@@ -112,10 +114,10 @@
         <p>The ARTCC HIGH and ARTCC LOW Sections are nearly identical to the ARTCC section. However, instead of naming the subfolder "ARTCC", name it "ARTCC HIGH" or "ARTCC LOW", respectively. Paths must be named with the name of the sector or TRACON that the segment is part of, such as CON37 or A90.</p>
         <img class="help" src="img/help4.png">
         <h3 id="sid">The SID and STAR Sections</h3>
-        <p>The SID and STAR sections are used to define diagrams and video maps. Their subfolders must be named "SID" or "STAR", respectively. Each subfolder must contain additional folders, one for each diagram that can be toggled on or off by controllers. You may create as many paths as necessary within each diagram subfolder. Paths may remain unnamed or can be named with their VRC color. This will require some manual editing of the sector file after its creation. For more information on defining colors, see the "Color Definitions" section on <a target="_blank" href="http://www1.metacraft.com/VRC/docs/doc.php?page=appendix_g">this</a> page.</p>
+        <p>The SID and STAR sections are used to define diagrams and video maps. Their subfolders must be named "SID" or "STAR", respectively. Each subfolder must contain additional folders, one for each diagram that can be toggled on or off by controllers. You may create as many paths as necessary within each diagram subfolder. Paths may remain unnamed or can be named with their VRC color. You may also enter a default color name on the website under "Default Map Color" to rename all unnamed lines. This will require some manual editing of the sector file after its creation. For more information on defining colors, see the "Color Definitions" section on <a target="_blank" href="http://www1.metacraft.com/VRC/docs/doc.php?page=appendix_g">this</a> page.</p>
         <img class="help" src="img/help5.png">
         <h3 id="geo">The GEO section</h3>
-        <p>The GEO section is used to define geographic data such as coastlines or major bodies of water. Its subfolder must be named "GEO". You may create as many paths as necessary within the GEO subfolder. Paths may remain unnamed or can be named with their VRC color.</p>
+        <p>The GEO section is used to define geographic data such as coastlines or major bodies of water. Its subfolder must be named "GEO". You may create as many paths as necessary within the GEO subfolder. Paths may remain unnamed or can be named with their VRC color. You may also enter a default color name on the website under "Default Map Color" to rename all unnamed lines.</p>
         <h3 id="regions">The REGIONS section</h3>
         <p>The REGIONS section is used to define areas filled with a solid color. Its subfolder must be named "REGIONS". Use the Add Polygon tool on the top toolbar to add as many polygons as necessary within the REGIONS folder.</p>
         <img class="help" src="img/help6.png">
@@ -124,7 +126,7 @@
         <h3 id="labels">The LABELS section</h3>
         <p>The LABELS section is used to define simple static text strings drawn at specified locations. Its subfolder must be named "LABELS". Use the Add Placemark tool on the top toolbar to add as many placemarks as necessary within the LABELS folder.</p>
         <img class="help" src="img/help8.png">
-        <p>Labels must be named with their label name, which may contain spaces.</p>
+        <p>Labels must be named with their label name, which may contain spaces. To provide a color for the labels, enter it into the "Default Label Color" box on the website.</p>
         <img class="help" src="img/help9.png">
         <h3 id="uploading_ge_data">Uploading Google Earth Data</h3>
         <p>When you have completed as many sections as necessary on Google Earth, right-click your root sector folder and select Copy.</p>

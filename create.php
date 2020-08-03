@@ -6,8 +6,8 @@ $date = date("m/d/Y");
 $infoName = $_POST['infoName'];
 $infoCallsign = $_POST['infoCallsign'];
 $infoAirport = $_POST['infoAirport'];
-$infoLat = $_POST['infoLat'];
-$infoLong = $_POST['infoLong'];
+$infoLat = DDLatToDMS($_POST['infoLat']);
+$infoLong = DDLongToDMS($_POST['infoLong']);
 $infoNMLat = $_POST['infoNMLat'];
 $infoNMLong = $_POST['infoNMLong'];
 $infoMV = $_POST['infoMV'];
@@ -17,6 +17,10 @@ $kml = NULL;
 
 if ($_POST['kmlText'])
     $kml = new SimpleXMLElement($_POST['kmlText']);
+
+$sectorColor = $_POST['sectorColor'];
+$labelColor = $_POST['labelColor'];
+
 
 $navLatCenter = $_POST['navLatCenter'];
 $navLongCenter = $_POST['navLongCenter'];
@@ -78,15 +82,15 @@ if ($kml) {
                 break;
             case "SID":
                 echo "\n[SID]\n";
-                genMap($section, false);
+                genMap($section, $sectorColor, false);
                 break;
             case "STAR":
                 echo "\n[STAR]\n";
-                genMap($section, false);
+                genMap($section, $sectorColor, false);
                 break;
             case "GEO":
                 echo "\n[GEO]\n";
-                genMap($section, true);
+                genMap($section, $sectorColor, true);
                 break;
             case "REGIONS":
                 echo "\n[REGIONS]\n";
@@ -94,7 +98,7 @@ if ($kml) {
                 break;
             case "LABELS":
                 echo "\n[LABELS]\n";
-                genLabels($section);
+                genLabels($section, $labelColor);
                 break;
         }
     }
@@ -136,10 +140,8 @@ function genARTCC($section)
     }
 }
 
-function genMap($section, $isGeo)
+function genMap($section, $defaultColor, $isGeo)
 {
-    $defaultColor = ""; // Assign this color from POST to add default
-
     if (!$isGeo) {
         $diagrams = $section->Folder;
         foreach ($diagrams as $diagram) {
@@ -169,14 +171,14 @@ function genRegions($regions)
     }
 }
 
-function genLabels($labels)
+function genLabels($labels, $defaultColor)
 {
     $labels = $labels->Placemark;
     foreach ($labels as $label) {
         echo "\"" . $label->name . "\"";
         $coords = $label->Point->coordinates;
         $parts = explode(",", $coords);
-        echo " " . DDToDMS($parts[1], $parts[0]) . "\n";
+        echo " " . DDToDMS($parts[1], $parts[0]) . " " . $defaultColor . "\n";
     }
 }
 
