@@ -42,6 +42,11 @@ $name = $dom->createElement('name', "GEO");
 $folderGEO->appendChild($name);
 $document->appendChild($folderGEO);
 
+$folderLabels = $dom->createElement('Folder');
+$name = $dom->createElement('name', "LABELS");
+$folderLabels->appendChild($name);
+$document->appendChild($folderLabels);
+
 $lines = explode("\n", $sector);
 $cleanLines = [""];
 $j = 0;
@@ -55,7 +60,7 @@ for ($i = 0; $i < sizeof($lines); $i++) {
     $line = preg_replace('!\s+!', ' ', $line);
     $line = trim($line);
     if (!empty($line)) {
-        $cleanLines[$j]=$line;
+        $cleanLines[$j] = $line;
         $j++;
     }
 }
@@ -65,34 +70,34 @@ $lines = $cleanLines;
 
 for ($i = 0; $i < sizeof($lines); $i++) {
     $line = $lines[$i];
-    $elements = preg_split('/("[^"]*")|\h+/', $line, -1, PREG_SPLIT_NO_EMPTY|PREG_SPLIT_DELIM_CAPTURE);
+    $elements = preg_split('/("[^"]*")|\h+/', $line, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
 
     // Determine state
-    if ($elements[0]=="[INFO]" || $elements[0] == "VOR" || $elements[0] == "NDB" || $elements[0] == "FIXES" || $elements[0] == "AIRPORT" || $elements[0] == "RUNWAY" || $elements[0] == "LOW AIRWAY" || $elements[0] == "HIGH AIRWAY" || $elements[0] =="#define" ) {
+    if ($elements[0] == "[INFO]" || $elements[0] == "VOR" || $elements[0] == "NDB" || $elements[0] == "FIXES" || $elements[0] == "AIRPORT" || $elements[0] == "RUNWAY" || $elements[0] == "LOW AIRWAY" || $elements[0] == "HIGH AIRWAY" || $elements[0] == "#define") {
         $state = "skip ";
         continue;
-    } else if ($elements[0]=="[REGIONS]") {
+    } else if ($elements[0] == "[REGIONS]") {
         $state = "regions";
         continue;
-    } else if ($elements[0]=="[LABELS]") {
+    } else if ($elements[0] == "[LABELS]") {
         $state = "labels";
         continue;
-    }  else if ($elements[0]=="[ARTCC]") {
+    } else if ($elements[0] == "[ARTCC]") {
         $state = "artcc";
         continue;
-    }   else if ($elements[0]=="[ARTCC" && $elements[1] == "HIGH]") {
+    } else if ($elements[0] == "[ARTCC" && $elements[1] == "HIGH]") {
         $state = "artcc high";
         continue;
-    } else if ($elements[0]=="[ARTCC" && $elements[1] == "LOW]") {
+    } else if ($elements[0] == "[ARTCC" && $elements[1] == "LOW]") {
         $state = "artcc low";
         continue;
-    } else if ($elements[0]=="[SID]") {
+    } else if ($elements[0] == "[SID]") {
         $state = "sid";
         continue;
-    } else if ($elements[0]=="[STAR]") {
+    } else if ($elements[0] == "[STAR]") {
         $state = "star";
         continue;
-    } else if ($elements[0]=="[GEO]") {
+    } else if ($elements[0] == "[GEO]") {
         $state = "geo";
         continue;
     }
@@ -115,29 +120,29 @@ for ($i = 0; $i < sizeof($lines); $i++) {
 
         $coordinateStr = DMStoDec($elements[1], $elements[2]);
 
-        while ($lines[$i+1]) {
-            $key = explode(" ", $lines[$i+1])[0];
+        while ($lines[$i + 1]) {
+            $key = explode(" ", $lines[$i + 1])[0];
             if (!preg_match("/(N|S)\d{1,3}.\d{1,2}.\d{1,2}.\d{1,3}/", $key)) {
                 break;
             }
 
-            $i=$i+1;
+            $i = $i + 1;
             $line = $lines[$i];
             $elements = explode(" ", $line);
-            $coordinateStr = $coordinateStr." ".DMStoDec($elements[0], $elements[1]);
+            $coordinateStr = $coordinateStr . " " . DMStoDec($elements[0], $elements[1]);
         }
 
         $coords = $dom->createElement('coordinates', $coordinateStr);
         $ring->appendChild($coords);
     } else if ($state == "labels") {
         $placemark = $dom->createElement('Placemark');
-        $document->appendChild($placemark);
-        $name = $dom->createElement('name', str_replace('"',"",$elements[0]));
+        $folderLabels->appendChild($placemark);
+        $name = $dom->createElement('name', str_replace('"', "", $elements[0]));
         $placemark->appendChild($name);
         $point = $dom->createElement('Point');
         $placemark->appendChild($point);
         $coordinates = $dom->createElement('coordinates', DMStoDec($elements[1], $elements[2]));
-        $point->appendChild($coordinates); 
+        $point->appendChild($coordinates);
     } else if ($state == "skip") {
         continue;
     } else if ($state == "artcc" || $state == "artcc high" || $state == "artcc low") {
@@ -155,7 +160,7 @@ for ($i = 0; $i < sizeof($lines); $i++) {
         $placemark->appendChild($name);
         $lineString = $dom->createElement('LineString');
         $placemark->appendChild($lineString);
-        
+
         $prevCoord = DMStoDec($elements[3], $elements[4]);
         $coordinateStr = DMStoDec($elements[1], $elements[2]) . " " . $prevCoord;
 
@@ -176,18 +181,18 @@ for ($i = 0; $i < sizeof($lines); $i++) {
             } else {
                 break;
             }
-       }
+        }
         $i = $j - 1;
         $coordinates = $dom->createElement('coordinates', $coordinateStr);
         $lineString->appendChild($coordinates);
     } else if ($state == "sid" || $state == "star") {
         $pattern = "~(N|S)[0-9]{1,3}\.[0-9]{1,2}\.[0-9]{1,2}\.[0-9]{1,4}~";
-        if (count($elements) > 4 && !preg_match($pattern, $elements[0])) { 
+        if (count($elements) > 4 && !preg_match($pattern, $elements[0])) {
             $folderSIDName = $dom->createElement('Folder');
             $elemi = 1;
             $nameString = $elements[0];
             while (!preg_match($pattern, $elements[$elemi])) {
-                $nameString = $nameString." ".$elements[$elemi];
+                $nameString = $nameString . " " . $elements[$elemi];
                 $elemi++;
             }
 
@@ -206,7 +211,7 @@ for ($i = 0; $i < sizeof($lines); $i++) {
                 if (preg_match($pattern, $nextLine[0])) { //adding sid points
                     $lineString = $dom->createElement('LineString');
                     $placemark->appendChild($lineString);
-                    
+
                     $prevCoord = DMStoDec($nextLine[2], $nextLine[3]);
                     $coordinateStr = DMStoDec($nextLine[0], $nextLine[1]) . " " . $prevCoord;
 
@@ -226,10 +231,9 @@ for ($i = 0; $i < sizeof($lines); $i++) {
                         } else {
                             break;
                         }
-                   }
+                    }
                     $j = $k - 1;
 
-                      
                     $coordinates = $dom->createElement('coordinates', $coordinateStr);
                     $lineString->appendChild($coordinates);
                     $folderSIDName->appendChild($placemark);
@@ -247,7 +251,7 @@ for ($i = 0; $i < sizeof($lines); $i++) {
 
         $lineString = $dom->createElement('LineString');
         $placemark->appendChild($lineString);
-        
+
         $prevCoord = DMStoDec($elements[2], $elements[3]);
         $coordinateStr = DMStoDec($elements[0], $elements[1]) . " " . $prevCoord;
 
@@ -268,7 +272,7 @@ for ($i = 0; $i < sizeof($lines); $i++) {
             } else {
                 break;
             }
-       }
+        }
         $i = $j - 1;
         $coordinates = $dom->createElement('coordinates', $coordinateStr);
         $lineString->appendChild($coordinates);
@@ -279,13 +283,13 @@ $domFolders = $document->childNodes;
 $foldersToRemove = array();
 
 foreach ($domFolders as $folder) {
-  if (count($folder->childNodes) == 1)
-    $foldersToRemove[] = $folder;
+    if (count($folder->childNodes) == 1)
+        $foldersToRemove[] = $folder;
 }
 
-foreach( $foldersToRemove as $folder ){
-  $folder->parentNode->removeChild($folder);
+foreach ($foldersToRemove as $folder) {
+    $folder->parentNode->removeChild($folder);
 }
-    
+
 
 $dom->save("sector.kml");
