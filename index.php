@@ -10,15 +10,15 @@
 </head>
 
 <body>
-    <img src="logo.png" class="logo">
+    <a href="https://bvartcc.com"><img src="img/logo.png" class="logo"></a>
     <!-- Header -->
-    <h1>Sector File Generator</h1>
+    <h1>Facility Engineer Toolkit</h1>
     <hr>
     <div class="menu">
         <span>
             <button onclick="showCreateWindow()" class="menu">Create a sector file</button>
             <button onclick="showConvertWindow()" class="menu">Convert .sct2 to .kml</button>
-            <button class="menu" disabled>Help</button>
+            <button onclick="showHelpWindow()" class="menu">Help</button>
         </span>
     </div>
 
@@ -61,6 +61,8 @@
 
     <div id="convertWindow" class="inputWindow">
         <h3>Convert an existing sector file into a Google Earth KML format by pasting it below or uploading the file: </h3>
+        <div>*Note that this tool is unable to parse diagrams that use NAVAIDs or fixes to define lines. All lines must be formatted with coordinates only.</div>
+        <br>
         <div>
             <textarea id="sctText" rows="10" cols="50" placeholder="Paste sector file text here"></textarea>
             <div>Or upload the sector file:</div>
@@ -70,6 +72,76 @@
         <button onclick="convertFile()" id="convertSubmit">Convert to KML file</button>
         <div class="loader" id="convertLoader" style="display:inline-block"></div>
         <div style="display:inline-block" id="convertStatus" class="status">status</div>
+    </div>
+
+    <div id="helpWindow" class="inputWindow">
+        <h2>Table of Contents:</h2>
+        <ul>
+            <li>
+                <a href="#create">Creating a new Sector File</a>
+                <ul>
+                    <li><a href="#basic_info">Basic Information</a></li>
+                    <li><a href="#ge_kml">Google Earth KML</a></li>
+                    <li><a href="#artcc">The ARTCC Section</a></li>
+                    <li><a href="#artcc_high">The ARTCC HIGH and ARTCC LOW Sections</a></li>
+                    <li><a href="#sid">The SID and STAR Sections</a></li>
+                    <li><a href="#geo">The GEO Section</a></li>
+                    <li><a href="#regions">The REGIONS Section</a></li>
+                    <li><a href="#labels">The LABELS Section</a></li>
+                    <li><a href="#uploading_ge_data">Uploading Google Earth Data</a></li>
+                    <li><a href="#navigraph">Navigraph NavData</a></li>
+                </ul>
+            </li>
+            <li><a href="#convert">Converting a .sct2 File to a .kml File</a></li>
+            <li><a href="#report">Reporting Issues or Suggestions</a></li>
+        </ul>
+        <h2 id="create">Creating a new Sector File:</h2>
+        <h3 id="basic_info">Basic Information</h3>
+        <p>Every sector file contains an info section that defines basic required parameters about the airspace represented by the sector file. In-depth documentation can be found on <a target="_blank" href="http://www1.metacraft.com/VRC/docs/doc.php?page=appendix_g">this</a> page under "The [INFO] Section".</p>
+        <p>Note that all coordinates must be inputted in decimal format (42.717, -71.123) and will be converted automatically to the degree, minute, second format used by VRC.</p>
+        <h3 id="ge_kml">Google Earth KML</h3>
+        <p>The majority of the following sections are to be designed on Google Earth Pro then exported to this website. Google Earth is a free application available on PC, Mac, or Linux and can be downloaded <a target="blank" href="https://www.google.com/earth/versions/#download-pro ">here</a>.</p>
+        <p>Once you have installed Google Earth, create a main sector directory by right-clicking "My Places" then selecting Add &#9654 Folder. You may name this folder whatever you wish.</p>
+        <img class="help" src="img/help1.png">
+        <h3 id="artcc">The ARTCC Section</h3>
+        <p>The ARTCC Section is used to define major ARTCC/FIR boundaries. Start by creating a subfolder within your main sector directory and name it "ARTCC". Next, use the Add Path tool located on the top toolbar to start defining the ARTCC boundary.</p>
+        <img class="help" src="img/help2.png">
+        <p>The path must be named with the name of the boundary that the segment is part of, such as KZBW. You may add as many paths as necessary with various names. Names must not contain spaces.</p>
+        <img class="help" src="img/help3.png">
+        <h3 id="artcc_high">The ARTCC HIGH and ARTCC LOW Sections</h3>
+        <p>The ARTCC HIGH and ARTCC LOW Sections are nearly identical to the ARTCC section. However, instead of naming the subfolder "ARTCC", name it "ARTCC HIGH" or "ARTCC LOW", respectively. Paths must be named with the name of the sector or TRACON that the segment is part of, such as CON37 or A90.</p>
+        <img class="help" src="img/help4.png">
+        <h3 id="sid">The SID and STAR Sections</h3>
+        <p>The SID and STAR sections are used to define diagrams and video maps. Their subfolders must be named "SID" or "STAR", respectively. Each subfolder must contain additional folders, one for each diagram that can be toggled on or off by controllers. You may create as many paths as necessary within each diagram subfolder. Paths may remain unnamed or can be named with their VRC color. This will require some manual editing of the sector file after its creation. For more information on defining colors, see the "Color Definitions" section on <a target="_blank" href="http://www1.metacraft.com/VRC/docs/doc.php?page=appendix_g">this</a> page.</p>
+        <img class="help" src="img/help5.png">
+        <h3 id="geo">The GEO section</h3>
+        <p>The GEO section is used to define geographic data such as coastlines or major bodies of water. Its subfolder must be named "GEO". You may create as many paths as necessary within the GEO subfolder. Paths may remain unnamed or can be named with their VRC color.</p>
+        <h3 id="regions">The REGIONS section</h3>
+        <p>The REGIONS section is used to define areas filled with a solid color. Its subfolder must be named "REGIONS". Use the Add Polygon tool on the top toolbar to add as many polygons as necessary within the REGIONS folder.</p>
+        <img class="help" src="img/help6.png">
+        <p>Polygons must be named with their VRC color.</p>
+        <img class="help" src="img/help7.png">
+        <h3 id="labels">The LABELS section</h3>
+        <p>The LABELS section is used to define simple static text strings drawn at specified locations. Its subfolder must be named "LABELS". Use the Add Placemark tool on the top toolbar to add as many placemarks as necessary within the LABELS folder.</p>
+        <img class="help" src="img/help8.png">
+        <p>Labels must be named with their label name, which may contain spaces.</p>
+        <img class="help" src="img/help9.png">
+        <h3 id="uploading_ge_data">Uploading Google Earth Data</h3>
+        <p>When you have completed as many sections as necessary on Google Earth, right-click your root sector folder and select Copy.</p>
+        <img class="help" src="img/help10.png">
+        <p>Next, paste the entire folder inside the text area. Note that large folders may take a few seconds to upload. Wait until the text appears before proceeding.</p>
+        <img class="help" src="img/help11.png">
+        <h3 id="navigraph">Navigraph NavData</h3>
+        <p>This tool utilizes data uploaded from Navigraph to generate airport and NAVAID data. Navigraph is a paid subscription service that can be purchased <a target="_blank" href="https://navigraph.com/home">here</a>. To begin, open the Navigraph FMS Data Manager and select Addon Mappings. Next, create a custom addon mapping for X-Plane 11 (NOT X-Plane 11.50 and above). Select a custom install directory of a convenient folder. Note you do not have to own or have X-Plane installed.</p>
+        <img class="help" src="img/help12.png">
+        <p>Return to the website and enter the coordinate for the center of your sector and define a radius for the extent of data to include. Finally, upload Airports.txt, Navaids.txt, Waypoints.txt and/or ATS.txt from your Navigraph install location defined in the previous step.</p>
+        <br>
+        <p>When have uploaded all the data for your sector file, click "Create Sector File" to create and download your file.</p>
+        <h2 id="convert">Converting a .sct2 File to a .kml File:</h2>
+        <p>To convert an existing .sct2 file to a .kml file to for easier editing either paste the contents of the .sct2 file you wish to convert into the text area or upload the .sct2 file in its entirety. Then click "Convert to KML file". Note that this tool is unable to convert diagrams that use NAVAIDs or fixes to define lines. All lines must be formatted with coordinates only.</p>
+        <img class="help" src="img/help13.png">
+        <h2 id="report">Reporting Issues or Suggestions:</h2>
+        <p>This project is open source and available on <a target="_blank" href="https://github.com/nrankin18/FETools">GitHub</a>. Please forward issues or suggestions to nathanr (at) bvartcc.com</p>
     </div>
 
 </html>

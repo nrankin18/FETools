@@ -8,13 +8,25 @@ window.onload = function() {
 };
 
 function showConvertWindow() {
-    document.getElementById('createWindow').style.display = "none";
+    hideWindows();
     document.getElementById('convertWindow').style.display = "block";
 }
 
+function showHelpWindow() {
+    hideWindows();
+    document.getElementById('helpWindow').style.display = "block";
+}
+
 function showCreateWindow() {
+    hideWindows();
     document.getElementById('createWindow').style.display = "block";
+}
+
+function hideWindows() {
     document.getElementById('convertWindow').style.display = "none";
+    document.getElementById('helpWindow').style.display = "none";
+    document.getElementById('createWindow').style.display = "none";
+
 }
 
 function disableSubmit() {
