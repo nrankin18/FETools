@@ -6,8 +6,12 @@ $date = date("m/d/Y");
 $infoName = $_POST['infoName'];
 $infoCallsign = $_POST['infoCallsign'];
 $infoAirport = $_POST['infoAirport'];
-$infoLat = DDLatToDMS($_POST['infoLat']);
-$infoLong = DDLongToDMS($_POST['infoLong']);
+$infoLat="";
+if ($_POST['infoLat'])
+    $infoLat = DDLatToDMS($_POST['infoLat']);
+$infoLong="";
+    if ($_POST['infoLong'])
+        $infoLong = DDLatToDMS($_POST['infoLong']);
 $infoNMLat = $_POST['infoNMLat'];
 $infoNMLong = $_POST['infoNMLong'];
 $infoMV = $_POST['infoMV'];
