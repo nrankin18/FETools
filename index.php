@@ -110,6 +110,7 @@
                 </ul>
             </li>
             <li><a href="#convert">Converting a .sct2 File to a .kml File</a></li>
+            <li><a href="#mva">Converting FAA MVA/MIA Files</a></li>
             <li><a href="#report">Reporting Issues or Suggestions</a></li>
         </ul>
         <h2 id="create">Creating a new Sector File:</h2>
@@ -159,6 +160,11 @@
         <h2 id="convert">Converting a .sct2 File to a .kml File:</h2>
         <p>To convert an existing .sct2 file to a .kml file to for easier editing either paste the contents of the .sct2 file you wish to convert into the text area or upload the .sct2 file in its entirety. Then click "Convert to KML file". Note that this tool is unable to convert diagrams that use NAVAIDs or fixes to define lines. All lines must be formatted with coordinates only.</p>
         <img class="help" src="img/help13.png">
+        <h2 id="mva">Converting FAA MVA/MIA Files:</h2>
+        <p>The FAA publishes their MVA and MIA files <a href="https://www.faa.gov/air_traffic/flight_info/aeronav/digital_products/mva_mia/" target="_blank">here</a> on their website. To convert to a .kml file for use with Google Earth, save the .xml version of the file you wish to convert from the FAA website. Depending on your browser, you may need to right click on the link and select "Save link as..." to download.</p>
+        <img class="help" src="img/help14.png">
+        <p>Once you have downloaded the .xml file, you can upload it to this website to begin the conversion process. This will create a .kml file you can open and edit in Google Earth. To export from Google Earth into a .sct2 format, please see <a href="#uploading_ge_data">Uploading Google Earth Data</a>.</p>
+        <img class="help" src="img/help15.png">
         <h2 id="report">Reporting Issues or Suggestions:</h2>
         <p>This project is open source and available on <a target="_blank" href="https://github.com/nrankin18/FETools">GitHub</a>. Please forward issues or suggestions to nathanr (at) bvartcc.com</p>
     </div>
