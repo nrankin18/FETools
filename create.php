@@ -26,26 +26,26 @@ $sectorColor = $_POST['sectorColor'];
 $labelColor = $_POST['labelColor'];
 
 
-$navLatCenter = $_POST['navLatCenter'];
-$navLongCenter = $_POST['navLongCenter'];
-$navRadius = $_POST['navRadius'];
+// $navLatCenter = $_POST['navLatCenter'];
+// $navLongCenter = $_POST['navLongCenter'];
+// $navRadius = $_POST['navRadius'];
 
 $navAirports = NULL;
 $navNavaids = NULL;
 $navWaypoints = NULL;
 $navATS = NULL;
 
-if ($_POST['navAirports'])
-    $navAirports = $_POST['navAirports'];
+// if ($_POST['navAirports'])
+//     $navAirports = $_POST['navAirports'];
 
-if ($_POST['navNavaids'])
-    $navNavaids = $_POST['navNavaids'];
+// if ($_POST['navNavaids'])
+//     $navNavaids = $_POST['navNavaids'];
 
-if ($_POST['navWaypoints'])
-    $navWaypoints = $_POST['navWaypoints'];
+// if ($_POST['navWaypoints'])
+//     $navWaypoints = $_POST['navWaypoints'];
 
-if ($_POST['navATS'])
-    $navATS = $_POST['navATS'];
+// if ($_POST['navATS'])
+//     $navATS = $_POST['navATS'];
 
 echo "; $infoName
 ; Copyright $year. All rights reserved. 
@@ -67,7 +67,7 @@ echo "; $infoName
 echo "[INFO]\n$infoName\n$infoCallsign\n$infoAirport\n$infoLat\n$infoLong\n$infoNMLat\n$infoNMLong\n$infoMV\n$infoScale\n";
 
 if ($kml) {
-    $kml = $kml->Document->Folder->Folder;
+    $kml = $kml->Folder->Folder;
 
     foreach ($kml as $section) {
         switch ($section->name) {
@@ -114,7 +114,7 @@ if ($navWaypoints) {
 }
 
 if ($navNavaids) {
-    genNavaids($navNavaids, $navLatCenter, $navLongCenter, $navRadius);
+    genERAMNavaids($navNavaids, $navLatCenter, $navLongCenter, $navRadius);
 }
 
 if ($navAirports) {
@@ -225,6 +225,35 @@ function genNavaids($navaids, $latCenter, $longCenter, $range)
     }
 }
 
+function genERAMNavaids($navaids, $latCenter, $longCenter, $range)
+{
+    $vors = [];
+    $ndbs = [];
+    $navaids = explode("\n", $navaids);
+    foreach ($navaids as $navaid) {
+        $navaid = explode(",", $navaid);
+        if (count($navaid) >= 3)
+            if (distance($navaid[6], $navaid[7], $latCenter, $longCenter) < NMtoMeters($range)) {
+                if (isVORFreq($navaid[2]))
+                    array_push($vors, new eramNAVAID($navaid[6], $navaid[7]));
+                else if (isNDBFreq($navaid[2])) {
+                    array_push($ndbs, new eramNAVAID($navaid[6], $navaid[7]));
+                }
+            }
+    }
+
+    echo "\n[VOR]\n";
+    foreach ($vors as $vor) {
+        echo "$vor\n";
+    }
+
+    echo "\n[NDB]\n";
+    foreach ($ndbs as $ndb) {
+        echo "$ndb\n";
+    }
+}
+
+
 class NAVAID
 {
     public $id;
@@ -248,11 +277,28 @@ class NAVAID
     }
 }
 
+class eramNAVAID
+{
+    public $lat;
+    public $long;
+
+    function __construct($lat, $long)
+    {
+        $this->lat = $lat;
+        $this->long = $long;
+    }
+
+    function __toString()
+    {
+        return "<Element xsi:type=\"Symbol\" Filters=\"\" Lat=\"$this->lat\" Lon=\"$this->long\" />";
+    }
+}
+
 function isVORFreq($freq)
 {
     if ($freq < 108 || $freq > 117.95)
         return false;
-    if ($freq >= 108.0 || $freq <= 111.95) {
+    if ($freq >= 108.0 && $freq <= 111.95) {
         $freq = (string) $freq;
         $digit = (int) $freq[4];
         if ($digit % 2 != 0)
