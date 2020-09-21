@@ -74,10 +74,9 @@ function enableSubmit() {
 
 function testRequireNavInfo() {
   if (
-    $("#navAirports").get(0).files.length === 0 &&
-    $("#navNavaids").get(0).files.length === 0 &&
-    $("#navWaypoints").get(0).files.length === 0 &&
-    $("#navATS").get(0).files.length === 0
+    $("#navAPT").get(0).files.length === 0 &&
+    $("#navAWY").get(0).files.length === 0 &&
+    $("#navFIX").get(0).files.length === 0
   ) {
     requireNavInfo = false;
   } else {
@@ -86,29 +85,26 @@ function testRequireNavInfo() {
 }
 
 $(document).ready(function () {
-  $("#navAirports").on("change", function () {
+  $("#navAPT").on("change", function () {
     testRequireNavInfo();
   });
-  $("#navNavaids").on("change", function () {
+  $("#navAWY").on("change", function () {
     testRequireNavInfo();
   });
-  $("#navWaypoints").on("change", function () {
-    testRequireNavInfo();
-  });
-  $("#navATS").on("change", function () {
+  $("#navFIX").on("change", function () {
     testRequireNavInfo();
   });
 });
 
 async function createFile() {
-  // const navLatCenter = document.getElementById("navLatCenter").value;
-  // const navLongCenter = document.getElementById("navLongCenter").value;
-  // const navRadius = document.getElementById("navRadius").value;
+  const navLatCenter = document.getElementById("navLatCenter").value;
+  const navLongCenter = document.getElementById("navLongCenter").value;
+  const navRadius = document.getElementById("navRadius").value;
 
   if (
     requireNavInfo &&
     (navLongCenter.length < 1 ||
-      navLongCenter.length < 1 ||
+      navLatCenter.length < 1 ||
       navRadius.length < 1)
   ) {
     alert("Please enter location information to filter Navigraph data");
@@ -141,12 +137,10 @@ async function createFile() {
   // const navNavaids = await readFile(
   //   document.getElementById("navNavaids").files[0]
   // );
-  // createStatus.innerHTML = "Reading waypoints.txt...";
-  // const navWaypoints = await readFile(
-  //   document.getElementById("navWaypoints").files[0]
-  // );
-  // createStatus.innerHTML = "Reading ats.txt...";
-  // const navATS = await readFile(document.getElementById("navATS").files[0]);
+  createStatus.innerHTML = "Reading FIX.txt...";
+  const navFIX = await readFile(
+    document.getElementById("navFIX").files[0]
+  );
 
   createStatus.innerHTML = "Creating file...";
   $.ajax({
@@ -167,14 +161,11 @@ async function createFile() {
       sectorColor: sectorColor,
       labelColor: labelColor,
 
-      // navLatCenter: navLatCenter,
-      // navLongCenter: navLongCenter,
-      // navRadius: navRadius,
+      navLatCenter: navLatCenter,
+      navLongCenter: navLongCenter,
+      navRadius: navRadius,
 
-      // navAirports: navAirports,
-      // navNavaids: navNavaids,
-      // navWaypoints: navWaypoints,
-      // navATS: navATS,
+      navFIX: navFIX
     },
     cache: false,
     success: function (html) {

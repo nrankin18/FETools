@@ -6,12 +6,12 @@ $date = date("m/d/Y");
 $infoName = $_POST['infoName'];
 $infoCallsign = $_POST['infoCallsign'];
 $infoAirport = $_POST['infoAirport'];
-$infoLat="";
+$infoLat = "";
 if ($_POST['infoLat'])
     $infoLat = DDLatToDMS($_POST['infoLat']);
-$infoLong="";
-    if ($_POST['infoLong'])
-        $infoLong = DDLatToDMS($_POST['infoLong']);
+$infoLong = "";
+if ($_POST['infoLong'])
+    $infoLong = DDLatToDMS($_POST['infoLong']);
 $infoNMLat = $_POST['infoNMLat'];
 $infoNMLong = $_POST['infoNMLong'];
 $infoMV = $_POST['infoMV'];
@@ -26,14 +26,9 @@ $sectorColor = $_POST['sectorColor'];
 $labelColor = $_POST['labelColor'];
 
 
-// $navLatCenter = $_POST['navLatCenter'];
-// $navLongCenter = $_POST['navLongCenter'];
-// $navRadius = $_POST['navRadius'];
-
-$navAirports = NULL;
-$navNavaids = NULL;
-$navWaypoints = NULL;
-$navATS = NULL;
+$navLatCenter = $_POST['navLatCenter'];
+$navLongCenter = $_POST['navLongCenter'];
+$navRadius = $_POST['navRadius'];
 
 // if ($_POST['navAirports'])
 //     $navAirports = $_POST['navAirports'];
@@ -41,11 +36,9 @@ $navATS = NULL;
 // if ($_POST['navNavaids'])
 //     $navNavaids = $_POST['navNavaids'];
 
-// if ($_POST['navWaypoints'])
-//     $navWaypoints = $_POST['navWaypoints'];
+if ($_POST['navFIX'])
+    $navFIX = $_POST['navFIX'];
 
-// if ($_POST['navATS'])
-//     $navATS = $_POST['navATS'];
 
 echo "; $infoName
 ; Copyright $year. All rights reserved. 
@@ -108,22 +101,10 @@ if ($kml) {
     }
 }
 
-if ($navWaypoints) {
-    echo "\n[FIXES]\n";
-    genWaypoints($navWaypoints, $navLatCenter, $navLongCenter, $navRadius);
+if ($navFIX) {
+    genFixes($navFIX, $navLatCenter, $navLongCenter, $navRadius);
 }
 
-if ($navNavaids) {
-    genERAMNavaids($navNavaids, $navLatCenter, $navLongCenter, $navRadius);
-}
-
-if ($navAirports) {
-    genAirports($navAirports, $navLatCenter, $navLongCenter, $navRadius);
-}
-
-if ($navATS) {
-    genAirways($navATS, $navLatCenter, $navLongCenter, $navRadius);
-}
 
 function genARTCC($section)
 {
@@ -197,62 +178,28 @@ function genWaypoints($waypoints, $latCenter, $longCenter, $range)
     }
 }
 
-function genNavaids($navaids, $latCenter, $longCenter, $range)
+function genFixes($navFIX, $latCenter, $longCenter, $range)
 {
-    $vors = [];
-    $ndbs = [];
-    $navaids = explode("\n", $navaids);
-    foreach ($navaids as $navaid) {
-        $navaid = explode(",", $navaid);
-        if (count($navaid) >= 3)
-            if (distance($navaid[6], $navaid[7], $latCenter, $longCenter) < NMtoMeters($range)) {
-                if (isVORFreq($navaid[2]))
-                    array_push($vors, new NAVAID($navaid[0], $navaid[1], $navaid[2], $navaid[6], $navaid[7]));
-                else if (isNDBFreq($navaid[2])) {
-                    array_push($ndbs, new NAVAID($navaid[0], $navaid[1], $navaid[2], $navaid[6], $navaid[7]));
+    echo("[FIXES]\n");
+    $fixes = explode("\n", $navFIX);
+    foreach ($fixes as $fix) {
+        if (substr($fix, 0, 4) == "FIX1") {
+            $id = trim(substr($fix, 4, 30));
+            $lat = trim(substr($fix, 66, 14));
+            $long = trim(substr($fix, 80, 14));
+            $type = trim(substr($fix, 213, 15));
+
+            if ($type == "WAYPOINT" || $type == "RADAR" || $type == "REP-PT" || $type == "MIL-REP-PT" || $type == "MIL-WAYPOINT") {
+                 $lat = DMSLattoDec(substr($lat, 0, 2), substr($lat, 3, 2), substr($lat, 6, 6), substr($lat, 12, 1));
+                 $long = DMSLongtoDec(substr($long, 0, 3), substr($long, 4, 2), substr($long, 7, 2), substr($long, 13, 1));
+
+                if (distance($lat, $long, $latCenter, $longCenter) < NMtoMeters($range)) {
+                    echo ($id." ".DDToDMS($lat, $long)."\n");
                 }
             }
-    }
-
-    echo "\n[VOR]\n";
-    foreach ($vors as $vor) {
-        echo "$vor\n";
-    }
-
-    echo "\n[NDB]\n";
-    foreach ($ndbs as $ndb) {
-        echo "$ndb\n";
+        }
     }
 }
-
-function genERAMNavaids($navaids, $latCenter, $longCenter, $range)
-{
-    $vors = [];
-    $ndbs = [];
-    $navaids = explode("\n", $navaids);
-    foreach ($navaids as $navaid) {
-        $navaid = explode(",", $navaid);
-        if (count($navaid) >= 3)
-            if (distance($navaid[6], $navaid[7], $latCenter, $longCenter) < NMtoMeters($range)) {
-                if (isVORFreq($navaid[2]))
-                    array_push($vors, new eramNAVAID($navaid[6], $navaid[7]));
-                else if (isNDBFreq($navaid[2])) {
-                    array_push($ndbs, new eramNAVAID($navaid[6], $navaid[7]));
-                }
-            }
-    }
-
-    echo "\n[VOR]\n";
-    foreach ($vors as $vor) {
-        echo "$vor\n";
-    }
-
-    echo "\n[NDB]\n";
-    foreach ($ndbs as $ndb) {
-        echo "$ndb\n";
-    }
-}
-
 
 class NAVAID
 {

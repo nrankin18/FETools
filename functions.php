@@ -73,6 +73,30 @@ function DMStoDec($lat, $long)
     return $decLong . "," . $decLat . ",0";
 }
 
+function DMSLattoDec($deg, $min, $sec, $dec) {
+    $decLat = (0.000277777778) * ($sec);
+    $decLat += 0.01666667 * $min;
+    if ($dec == 'N') {
+        $decLat += floatval($deg);
+    } else {
+        $decLat += floatval($deg);
+        $decLat *= -1;
+    }
+    return $decLat;
+}
+
+function DMSLongtoDec($deg, $min, $sec, $dec) {
+    $decLong = (0.000277777778) * ($sec);
+    $decLong += 0.01666667 * $min;
+    if ($dec == 'E') {
+        $decLong += floatval($deg);
+    } else {
+        $decLong += floatval($deg);
+        $decLong *= -1;
+    }
+    return $decLong;
+}
+
 // Formats KML placemark line as N000.00.00.000 W000.00.00.000 N000.00.00.000 W000.00.00.000
 function formatLine($Placemark)
 {
