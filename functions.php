@@ -73,7 +73,8 @@ function DMStoDec($lat, $long)
     return $decLong . "," . $decLat . ",0";
 }
 
-function DMSLattoDec($deg, $min, $sec, $dec) {
+function DMSLattoDec($deg, $min, $sec, $dec)
+{
     $decLat = (0.000277777778) * ($sec);
     $decLat += 0.01666667 * $min;
     if ($dec == 'N') {
@@ -85,7 +86,8 @@ function DMSLattoDec($deg, $min, $sec, $dec) {
     return $decLat;
 }
 
-function DMSLongtoDec($deg, $min, $sec, $dec) {
+function DMSLongtoDec($deg, $min, $sec, $dec)
+{
     $decLong = (0.000277777778) * ($sec);
     $decLong += 0.01666667 * $min;
     if ($dec == 'E') {
@@ -152,4 +154,32 @@ function distance($decLat1, $decLong1, $decLat2, $decLong2)
 function NMtoMeters($nm)
 {
     return $nm * 1852;
+}
+
+function oppRwyID($rwy)
+{
+    $num = (int) substr($rwy, 0, 2);
+    $num += 18;
+    if ($num > 36)
+        $num -= 36;
+
+    if (strlen($rwy) == 3)
+        switch ($rwy[2]) {
+            case 'C':
+                return $num . 'C';
+            case 'R':
+                return $num . 'L';
+            case 'L':
+                return $num . 'R';
+        }
+    return $num;
+}
+
+function truToMag($tru, $magVar)
+{
+    if ($magVar[2] == "E") {
+        return $tru - (int)substr($magVar, 0, 2);
+    } else {
+        return $tru + (int)substr($magVar, 0, 2);
+    }
 }

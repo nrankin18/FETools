@@ -42,7 +42,7 @@
         </div>
         <label for="sectorColor">Default Map Color (can be left blank): </label><input type="text" id="sectorColor"><br>
         <label for="labelColor">Default Label Color (can be left blank): </label><input type="text" id="labelColor"><br>
-        <h3>Optionally, you can upload navigation data from the FAA's database found <a href="https://www.faa.gov/air_traffic/flight_info/aeronav/aero_data/NASR_Subscription/" target="_blank">here</a>.</h3>
+        <h3>Optionally, you can include navigation data from the FAA's database, valid until <?php echo(file_get_contents('NASR/date.txt')) ?>.</h3>
         <div>
             <label for="navLatCenter">Center of Sector: </label>
             <input type="text" id="navLatCenter" maxlength="14" placeholder="42.7170422">
@@ -50,9 +50,6 @@
             <span>Include all VORs, NDBs, fixes, airways and airports within a </span>
             <input type="text" id="navRadius" maxlength="3" placeholder="100">
             <span> nm radius</span><br>
-            <label for="navAPT">Upload APT.txt: </label><input type="file" id="navAPT" accept=".txt"> <br>
-            <label for="navAWY">Upload AWY.txt: </label><input type="file" id="navAWY" accept=".txt"> <br>
-            <label for="navFIX">Upload FIX.txt: </label><input type="file" id="navFIX" accept=".txt"> <br>
         </div>
         <br>
         <button id="createSubmit" onclick="createFile()">Create Sector File</button>

@@ -72,30 +72,6 @@ function enableSubmit() {
   document.getElementById("mvaSubmit").disabled = false;
 }
 
-function testRequireNavInfo() {
-  if (
-    $("#navAPT").get(0).files.length === 0 &&
-    $("#navAWY").get(0).files.length === 0 &&
-    $("#navFIX").get(0).files.length === 0
-  ) {
-    requireNavInfo = false;
-  } else {
-    requireNavInfo = true;
-  }
-}
-
-$(document).ready(function () {
-  $("#navAPT").on("change", function () {
-    testRequireNavInfo();
-  });
-  $("#navAWY").on("change", function () {
-    testRequireNavInfo();
-  });
-  $("#navFIX").on("change", function () {
-    testRequireNavInfo();
-  });
-});
-
 async function createFile() {
   const navLatCenter = document.getElementById("navLatCenter").value;
   const navLongCenter = document.getElementById("navLongCenter").value;
@@ -129,19 +105,6 @@ async function createFile() {
   const sectorColor = document.getElementById("sectorColor").value;
   const labelColor = document.getElementById("labelColor").value;
 
-  // createStatus.innerHTML = "Reading airports.txt...";
-  // const navAirports = await readFile(
-  //   document.getElementById("navAirports").files[0]
-  // );
-  // createStatus.innerHTML = "Reading navaids.txt...";
-  // const navNavaids = await readFile(
-  //   document.getElementById("navNavaids").files[0]
-  // );
-  createStatus.innerHTML = "Reading FIX.txt...";
-  const navFIX = await readFile(
-    document.getElementById("navFIX").files[0]
-  );
-
   createStatus.innerHTML = "Creating file...";
   $.ajax({
     type: "post",
@@ -164,8 +127,6 @@ async function createFile() {
       navLatCenter: navLatCenter,
       navLongCenter: navLongCenter,
       navRadius: navRadius,
-
-      navFIX: navFIX
     },
     cache: false,
     success: function (html) {
