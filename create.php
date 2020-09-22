@@ -102,9 +102,9 @@ if ($kml) {
 }
 
 if ($useNav) {
-    //genAirports($navLatCenter, $navLongCenter, $navRadius);
-    //genNavaids($navLatCenter, $navLongCenter, $navRadius);
-    //genFixes($navLatCenter, $navLongCenter, $navRadius);
+    genAirports($navLatCenter, $navLongCenter, $navRadius);
+    genNavaids($navLatCenter, $navLongCenter, $navRadius);
+    genFixes($navLatCenter, $navLongCenter, $navRadius);
     genAirway($navLatCenter, $navLongCenter, $navRadius);
 }
 
