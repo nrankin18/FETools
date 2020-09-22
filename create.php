@@ -60,7 +60,7 @@ echo "; $infoName
 echo "[INFO]\n$infoName\n$infoCallsign\n$infoAirport\n$infoLat\n$infoLong\n$infoNMLat\n$infoNMLong\n$infoMV\n$infoScale\n";
 
 if ($kml) {
-    $kml = $kml->Folder->Folder;
+    $kml = $kml->Document->Folder->Folder;
 
     foreach ($kml as $section) {
         switch ($section->name) {
