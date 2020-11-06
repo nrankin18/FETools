@@ -19,6 +19,7 @@
             <button onclick="showCreateWindow()" class="menu">Create a sector file</button>
             <button onclick="showConvertWindow()" class="menu">Convert .sct2 to .kml</button>
             <button onclick="showMVAWindow()" class="menu">Convert FAA MVA/MIA</button>
+            <!-- <button onclick="showUpdateWindow()" class="menu">Download vSTARS/vERAM data update</button> -->
             <button onclick="showHelpWindow()" class="menu">Help</button>
         </span>
     </div>
@@ -42,7 +43,7 @@
         </div>
         <label for="sectorColor">Default Map Color (can be left blank): </label><input type="text" id="sectorColor"><br>
         <label for="labelColor">Default Label Color (can be left blank): </label><input type="text" id="labelColor"><br>
-        <h3>Optionally, you can include navigation data from the FAA's database, valid until <?php echo(file_get_contents('NASR/date.txt')) ?>.</h3>
+        <h3>Optionally, you can include navigation data from the FAA's database, valid until <?php echo (file_get_contents('NASR/date.txt')) ?>.</h3>
         <div>
             <label for="navLatCenter">Center of Sector: </label>
             <input type="text" id="navLatCenter" maxlength="14" placeholder="42.7170422">
@@ -50,6 +51,7 @@
             <span>Include all VORs, NDBs, fixes, airways and airports within a </span>
             <input type="text" id="navRadius" maxlength="3" placeholder="100">
             <span> nm radius</span><br>
+            *Note this will take time to process. Please be patient.
         </div>
         <br>
         <button id="createSubmit" onclick="createFile()">Create Sector File</button>
@@ -83,6 +85,17 @@
         <button onclick="convertMVA()" id="mvaSubmit">Convert to KML file</button>
         <div class="loader" id="mvaLoader" style="display:inline-block"></div>
         <div style="display:inline-block" id="mvaStatus" class="status">status</div>
+    </div>
+
+    <div id="updateWindow" class="inputWindow">
+        <h3>Download data from the FAA's database, valid until <?php echo (file_get_contents('NASR/date.txt')) ?>: </h3>
+        <br>
+        <button onclick="updateSTARS()" id="starsSubmit">Download vSTARS navdata update</button>
+        <div class="loader" id="starsLoader" style="display:inline-block"></div>
+        <div style="display:inline-block" id="starsStatus" class="status">status</div>
+        <button onclick="updateERAM()" id="eramSubmit">Download vERAM navdata update</button>
+        <div class="loader" id="eramLoader" style="display:inline-block"></div>
+        <div style="display:inline-block" id="eramStatus" class="status">status</div>
     </div>
 
     <div id="helpWindow" class="inputWindow">
@@ -143,14 +156,6 @@
         <img class="help" src="img/help10.png">
         <p>Next, paste the entire folder inside the text area. Note that large folders may take a few seconds to upload. Wait until the text appears before proceeding.</p>
         <img class="help" src="img/help11.png">
-        <!--
-        <h3 id="navigraph">Navigraph NavData</h3>
-        <p>This tool utilizes data uploaded from Navigraph to generate airport and NAVAID data. Navigraph is a paid subscription service that can be purchased <a target="_blank" href="https://navigraph.com/home">here</a>. To begin, open the Navigraph FMS Data Manager and select Addon Mappings. Next, create a custom addon mapping for X-Plane 11 (NOT X-Plane 11.50 and above). Select a custom install directory of a convenient folder. Note you do not have to own or have X-Plane installed.</p>
-        <img class="help" src="img/help12.png">
-        <p>Return to the website and enter the coordinate for the center of your sector and define a radius for the extent of data to include. Finally, upload Airports.txt, Navaids.txt, Waypoints.txt and/or ATS.txt from your Navigraph install location defined in the previous step.</p>
-        <br>
-        <p>When have uploaded all the data for your sector file, click "Create Sector File" to create and download your file.</p>
-        -->
         <h2 id="convert">Converting a .sct2 File to a .kml File:</h2>
         <p>To convert an existing .sct2 file to a .kml file to for easier editing either paste the contents of the .sct2 file you wish to convert into the text area or upload the .sct2 file in its entirety. Then click "Convert to KML file". Note that this tool is unable to convert diagrams that use NAVAIDs or fixes to define lines. All lines must be formatted with coordinates only.</p>
         <img class="help" src="img/help13.png">

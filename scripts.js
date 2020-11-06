@@ -7,6 +7,8 @@ window.onload = function () {
   createStatus = document.getElementById("createStatus");
   convertStatus = document.getElementById("convertStatus");
   mvaStatus = document.getElementById("mvaStatus");
+  starsStatus = document.getElementById("starsStatus");
+  eramStatus = document.getElementById("eramStatus");
 };
 
 function showConvertWindow() {
@@ -29,17 +31,25 @@ function showMVAWindow() {
   document.getElementById("mvaWindow").style.display = "block";
 }
 
+function showUpdateWindow() {
+  hideWindows();
+  document.getElementById("updateWindow").style.display = "block";
+}
+
 function hideWindows() {
   document.getElementById("convertWindow").style.display = "none";
   document.getElementById("helpWindow").style.display = "none";
   document.getElementById("createWindow").style.display = "none";
   document.getElementById("mvaWindow").style.display = "none";
+  document.getElementById("updateWindow").style.display = "none";
 }
 
 function disableSubmit() {
   document.getElementById("createSubmit").disabled = true;
   document.getElementById("convertSubmit").disabled = true;
   document.getElementById("mvaSubmit").disabled = true;
+  document.getElementById("starsSubmit").disabled = true;
+  document.getElementById("eramSubmit").disabled = true;
 }
 
 function showCreateLoading() {
@@ -57,6 +67,17 @@ function showMVALoading() {
   document.getElementById("mvaLoader").style.visibility = "visible";
 }
 
+function showSTARSLoading() {
+  document.getElementById("starsStatus").style.visibility = "visible";
+  document.getElementById("starsLoader").style.visibility = "visible";
+}
+
+function showERAMLoading() {
+  document.getElementById("eramStatus").style.visibility = "visible";
+  document.getElementById("eramLoading").style.visibility = "visible";
+}
+
+
 function enableSubmit() {
   document.getElementById("createLoader").style.visibility = "hidden";
   document.getElementById("createStatus").style.visibility = "hidden";
@@ -67,9 +88,17 @@ function enableSubmit() {
   document.getElementById("mvaLoader").style.visibility = "hidden";
   document.getElementById("mvaStatus").style.visibility = "hidden";
 
+  document.getElementById("starsLoader").style.visibility = "hidden";
+  document.getElementById("starsStatus").style.visibility = "hidden";
+
+  document.getElementById("eramLoader").style.visibility = "hidden";
+  document.getElementById("eramStatus").style.visibility = "hidden";
+
   document.getElementById("createSubmit").disabled = false;
   document.getElementById("convertSubmit").disabled = false;
   document.getElementById("mvaSubmit").disabled = false;
+  document.getElementById("starsSubmit").disabled = false;
+  document.getElementById("eramSubmit").disabled = false;
 }
 
 async function createFile() {
@@ -194,6 +223,29 @@ async function convertFile() {
       const link = document.createElement("a");
       link.download = "sector.kml";
       link.href = "sector.kml";
+      link.click();
+      enableSubmit();
+    },
+  });
+}
+
+async function updateSTARS() {
+  disableSubmit();
+  starsStatus.innerHTML = "Loading data...";
+  showSTARSLoading();
+
+  $.ajax({
+    type: "post",
+    url: "update.php",
+    data: {
+      eram: 0
+    },
+    cache: false,
+    success: function () {
+      convertStatus.innerHTML = "Downloading file...";
+      const link = document.createElement("a");
+      link.download = "vSTARS.zip";
+      link.href = "vSTARS.zip";
       link.click();
       enableSubmit();
     },
