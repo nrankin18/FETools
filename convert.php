@@ -206,8 +206,10 @@ for ($i = 0; $i < sizeof($lines); $i++) {
             $j = $i + 1;
 
             while ($j < sizeof($cleanLines)) {
-                $placemark = $dom->createElement('Placemark');
                 $nextLine = preg_split('/\s+/', $cleanLines[$j]);
+                $placemark = $dom->createElement('Placemark');
+                $name = $dom->createElement('name', $nextLine[4]);
+                $placemark->appendChild($name);
                 if (preg_match($pattern, $nextLine[0])) { //adding sid points
                     $lineString = $dom->createElement('LineString');
                     $placemark->appendChild($lineString);
