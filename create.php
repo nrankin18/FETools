@@ -1,4 +1,114 @@
 <?php
+class Airport
+{
+    public $id;
+    public $name;
+    public $lat;
+    public $long;
+    public $rwys;
+    public $ctaf;
+
+    function __construct($id, $name, $ctaf, $lat, $long, $rwys)
+    {
+        $this->id = $id;
+        $this->name = $name;
+        $this->ctaf = $ctaf;
+        $this->lat = $lat;
+        $this->long = $long;
+        $this->rwys = $rwys;
+    }
+
+    function __toString()
+    {
+        return $this->id . " " . $this->ctaf . " " . DDtoDMS($this->lat, $this->long) . " E ;" . $this->name;
+    }
+}
+
+class Runway
+{
+    public $startID;
+    public $endID;
+
+    public $startMag;
+    public $endMag;
+
+    public $startLat;
+    public $startLong;
+
+    public $endLat;
+    public $endLong;
+
+    function __construct($startID, $endID, $startMag, $endMag, $startLat, $startLong, $endLat, $endLong)
+    {
+        $this->startID = $startID;
+        $this->endID = $endID;
+
+        $this->startMag = $startMag;
+        $this->endMag = $endMag;
+
+        $this->startLat = $startLat;
+        $this->startLong = $startLong;
+
+        $this->endLat = $endLat;
+        $this->endLong = $endLong;
+    }
+
+    function __toString()
+    {
+        return $this->startID . " " . $this->endID . " " . $this->startMag . " " . $this->endMag . " " . DDtoDMS($this->startLat, $this->startLong) . " " . DDtoDMS($this->endLat, $this->endLong);
+    }
+}
+
+class Airway
+{
+    public $id;
+
+    public $startLat;
+    public $startLong;
+
+    public $endLat;
+    public $endLong;
+
+    function __construct($id, $startLat, $startLong, $endLat, $endLong)
+    {
+        $this->id = $id;
+
+        $this->startLat = $startLat;
+        $this->startLong = $startLong;
+
+        $this->endLat = $endLat;
+        $this->endLong = $endLong;
+    }
+
+    function __toString()
+    {
+        return $this->id . " " . DDtoDMS($this->startLat, $this->startLong) . " " . DDtoDMS($this->endLat, $this->endLong);
+    }
+}
+
+class NAVAID
+{
+    public $id;
+    public $name;
+    public $freq;
+    public $lat;
+    public $long;
+
+    function __construct($id, $name, $freq, $lat, $long)
+    {
+        $this->id = $id;
+        $this->name = $name;
+        $this->freq = $freq;
+        $this->lat = $lat;
+        $this->long = $long;
+    }
+
+    function __toString()
+    {
+        return $this->id . " " . $this->freq . " " . DDtoDMS($this->lat, $this->long) . " ;" . $this->name;
+    }
+}
+
 require_once "functions.php";
 $year = date('Y');
 $date = date("m/d/Y");
@@ -244,28 +354,7 @@ function genNavaids($latCenter, $longCenter, $range)
     }
 }
 
-class NAVAID
-{
-    public $id;
-    public $name;
-    public $freq;
-    public $lat;
-    public $long;
 
-    function __construct($id, $name, $freq, $lat, $long)
-    {
-        $this->id = $id;
-        $this->name = $name;
-        $this->freq = $freq;
-        $this->lat = $lat;
-        $this->long = $long;
-    }
-
-    function __toString()
-    {
-        return $this->id . " " . $this->freq . " " . DDtoDMS($this->lat, $this->long) . " ;" . $this->name;
-    }
-}
 
 function genAirports($latCenter, $longCenter, $range)
 {
@@ -302,7 +391,7 @@ function genAirports($latCenter, $longCenter, $range)
             $magVar = trim(substr($airport, 586, 3));
             $rwys = [];
 
-            if ($type == "AIRPORT" && $open == "PU" && $status == "O") { // PU (public) O (operational)
+            if ($type == "AIRPORT" && $status == "O") { // PU (public) O (operational)
                 $lat = DMSLattoDec(substr($lat, 0, 2), substr($lat, 3, 2), substr($lat, 6, 6), substr($lat, 13, 1));
                 $long = DMSLongtoDec(substr($long, 0, 3), substr($long, 4, 2), substr($long, 7, 2), substr($long, 13, 1));
 
@@ -390,65 +479,7 @@ function genAirports($latCenter, $longCenter, $range)
     }
 }
 
-class Airport
-{
-    public $id;
-    public $name;
-    public $lat;
-    public $long;
-    public $rwys;
-    public $ctaf;
 
-    function __construct($id, $name, $ctaf, $lat, $long, $rwys)
-    {
-        $this->id = $id;
-        $this->name = $name;
-        $this->ctaf = $ctaf;
-        $this->lat = $lat;
-        $this->long = $long;
-        $this->rwys = $rwys;
-    }
-
-    function __toString()
-    {
-        return $this->id . " " . $this->ctaf . " " . DDtoDMS($this->lat, $this->long) . " E ;" . $this->name;
-    }
-}
-
-class Runway
-{
-    public $startID;
-    public $endID;
-
-    public $startMag;
-    public $endMag;
-
-    public $startLat;
-    public $startLong;
-
-    public $endLat;
-    public $endLong;
-
-    function __construct($startID, $endID, $startMag, $endMag, $startLat, $startLong, $endLat, $endLong)
-    {
-        $this->startID = $startID;
-        $this->endID = $endID;
-
-        $this->startMag = $startMag;
-        $this->endMag = $endMag;
-
-        $this->startLat = $startLat;
-        $this->startLong = $startLong;
-
-        $this->endLat = $endLat;
-        $this->endLong = $endLong;
-    }
-
-    function __toString()
-    {
-        return $this->startID . " " . $this->endID . " " . $this->startMag . " " . $this->endMag . " " . DDtoDMS($this->startLat, $this->startLong) . " " . DDtoDMS($this->endLat, $this->endLong);
-    }
-}
 
 function genAirway($latCenter, $longCenter, $range)
 {
@@ -513,29 +544,4 @@ function genAirway($latCenter, $longCenter, $range)
     }
 }
 
-class Airway
-{
-    public $id;
 
-    public $startLat;
-    public $startLong;
-
-    public $endLat;
-    public $endLong;
-
-    function __construct($id, $startLat, $startLong, $endLat, $endLong)
-    {
-        $this->id = $id;
-
-        $this->startLat = $startLat;
-        $this->startLong = $startLong;
-
-        $this->endLat = $endLat;
-        $this->endLong = $endLong;
-    }
-
-    function __toString()
-    {
-        return $this->id . " " . DDtoDMS($this->startLat, $this->startLong) . " " . DDtoDMS($this->endLat, $this->endLong);
-    }
-}
